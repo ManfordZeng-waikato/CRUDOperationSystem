@@ -39,7 +39,6 @@ namespace CRUDTest
             //Arrange
             CountryAddRequest? request = new CountryAddRequest() { CountryName = null };
 
-
             //Assert
             Assert.Throws<ArgumentNullException>(() =>
             {
