@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36518.9 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRUDOperationSystem", "CRUDOperationSystem\CRUDOperationSystem.csproj", "{9DF73CB0-6905-4045-A352-F609A4E7C7DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRUDTest", "CRUDTest\CRUDTest.csproj", "{95A8C151-9261-42DC-9C39-4E47C7F8E585}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{9DF73CB0-6905-4045-A352-F609A4E7C7DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DF73CB0-6905-4045-A352-F609A4E7C7DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DF73CB0-6905-4045-A352-F609A4E7C7DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95A8C151-9261-42DC-9C39-4E47C7F8E585}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95A8C151-9261-42DC-9C39-4E47C7F8E585}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95A8C151-9261-42DC-9C39-4E47C7F8E585}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95A8C151-9261-42DC-9C39-4E47C7F8E585}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
