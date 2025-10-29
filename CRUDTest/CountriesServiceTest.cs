@@ -88,7 +88,7 @@ namespace CRUDTest
         }
         #endregion
 
-        #region GetAllcountries
+        #region GetAllCountries
         [Fact]
         //The List of country should be empty by default
         public void GetAllcountries_EmptyList()
