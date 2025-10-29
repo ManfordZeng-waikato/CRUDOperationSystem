@@ -75,7 +75,7 @@ namespace CRUDTest
         public void AddCountry_ProperCountryDetails()
         {
             //Arrange
-            CountryAddRequest? request = new CountryAddRequest() { CountryName = "Janpan" };
+            CountryAddRequest? request = new CountryAddRequest() { CountryName = "Japan" };
 
             //Act
             CountryResponse countryResponse = _countriesService.AddCountry(request);
@@ -126,6 +126,40 @@ namespace CRUDTest
             {
                 Assert.Contains(expected_country, actual_country_response_listt);
             }
+        }
+        #endregion
+
+        #region GetCountryByCountryID
+        [Fact]
+        public void GetCountryByCountryID_NullCountryID()
+        {
+            //Arrange
+            Guid? countryID = null;
+
+            //Act
+            CountryResponse? countryResponse =
+            _countriesService.GetCountryByCountryID(countryID);
+
+            //Assert
+            Assert.Null(countryResponse);
+        }
+
+        [Fact]
+        public void GetCountryByCountryID_ValidCountryID()
+        {
+            //Arrange
+            CountryAddRequest? request1 =
+                new CountryAddRequest() { CountryName = "USA" };
+            CountryResponse country_response_from_add =
+                _countriesService.AddCountry(request1);
+
+            //Act
+            CountryResponse? country_response_from_get =
+            _countriesService.GetCountryByCountryID
+                (country_response_from_add.CountryID);
+
+            //Assert
+            Assert.Equal(country_response_from_add, country_response_from_get);
         }
         #endregion
     }
