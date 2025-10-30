@@ -4,6 +4,7 @@ namespace ServiceContracts.DTO
 {
     public class PersonResponse
     {
+        public Guid PersonID { get; set; }
         public string? PersonName { get; set; }
         public string? Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
@@ -36,6 +37,7 @@ namespace ServiceContracts.DTO
                 personResponse.Address == Address &&
                 personResponse.ReceiveNewsLetters == ReceiveNewsLetters &&
                 personResponse.Age == Age &&
+                personResponse.PersonID == PersonID &&
                 personResponse.Country == Country;
 
         }
