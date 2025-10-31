@@ -60,6 +60,7 @@ namespace ServiceContracts.DTO
                 DateOfBirth = person.DateOfBirth,
                 Address = person.Address,
                 CountryID = person.CountryID,
+                PersonID = person.PersonID,
                 ReceiveNewsLetters = person.ReceiveNewsLetters,
                 Gender = person.Gender,
                 Age = (person.DateOfBirth != null) ?

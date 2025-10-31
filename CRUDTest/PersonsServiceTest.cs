@@ -107,7 +107,6 @@ namespace CRUDTest
             _personService.GetPersonByPersonID(personResponse.PersonID);
 
             Assert.Equal(personResponse, personResponseFromGet);
-
         }
 
         #endregion
