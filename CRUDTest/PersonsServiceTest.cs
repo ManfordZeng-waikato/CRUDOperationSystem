@@ -2,6 +2,7 @@
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
 using Services;
+using Xunit.Abstractions;
 
 namespace CRUDTest
 {
@@ -9,11 +10,12 @@ namespace CRUDTest
     {
         private readonly IPersonsService _personService;
         private readonly ICountriesService _countriesService;
-
-        public PersonsServiceTest()
+        private readonly ITestOutputHelper _testOutputHelper;
+        public PersonsServiceTest(ITestOutputHelper testOutputHelper)
         {
             _personService = new PersonsService();
             _countriesService = new CountriesService();
+            _testOutputHelper = testOutputHelper;
         }
 
         #region AddPerson
@@ -182,8 +184,22 @@ namespace CRUDTest
                 personResponsesFromAdd.Add(person_reponse);
             }
 
+            //print personResponsesFromAdd
+            _testOutputHelper.WriteLine("Expected:");
+            foreach (PersonResponse person_response_from_add in personResponsesFromAdd)
+            {
+                _testOutputHelper.WriteLine((person_response_from_add).ToString());
+            }
+
             List<PersonResponse> persons_list_from_get =
             _personService.GetAllPersons();
+
+            //print personResponsesFromGet
+            _testOutputHelper.WriteLine("Actual:");
+            foreach (PersonResponse person_response_from_get in persons_list_from_get)
+            {
+                _testOutputHelper.WriteLine((person_response_from_get).ToString());
+            }
 
             foreach (PersonResponse person_response_from_add in personResponsesFromAdd)
             {
