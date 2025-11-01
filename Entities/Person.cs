@@ -12,6 +12,7 @@ namespace Entities
         public DateTime? DateOfBirth { get; set; }
         public string? Gender { get; set; }
         public Guid? CountryID { get; set; }
+        public string? Country { get; set; }
         public string? Address { get; set; }
         public bool ReceiveNewsLetters { get; set; }
     }
