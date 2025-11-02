@@ -1,6 +1,7 @@
 ﻿using Entities;
 using ServiceContracts;
 using ServiceContracts.DTO;
+using ServiceContracts.Enums;
 using Services.Helpers;
 
 namespace Services
@@ -110,6 +111,11 @@ namespace Services
                 default: filteredPersons = allPersons; break;
             }
             return filteredPersons;
+        }
+
+        public List<PersonResponse> GetSortedPersons(List<PersonResponse> allpersons, string sortBy, SortOrderOptions sortOrder)
+        {
+            throw new NotImplementedException();
         }
     }
 }
