@@ -474,5 +474,89 @@ namespace CRUDTest
             }
         }
         #endregion
+
+        #region UpdatePersons
+        [Fact]
+        public void UpdatePerson_NullPerson()
+        {
+            PersonUpdateRequest personUpdateRequest = null;
+
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                _personService.UpdatePerson(personUpdateRequest);
+            });
+        }
+
+        [Fact]
+        public void UpdatePerson_InvalidPersonID()
+        {
+            PersonUpdateRequest personUpdateRequest = new PersonUpdateRequest()
+            {
+                PersonID = Guid.NewGuid(),
+            };
+            Assert.Throws<ArgumentException>(() =>
+            {
+                _personService.UpdatePerson(personUpdateRequest);
+            });
+
+        }
+
+        [Fact]
+        public void UpdatePerson_NullPersonName()
+        {
+            CountryAddRequest countryAddRequest = new CountryAddRequest() { CountryName = "UK" };
+            CountryResponse country_response_from_add =
+             _countriesService.AddCountry(countryAddRequest);
+
+            PersonAddRequest personAddRequest = new PersonAddRequest()
+            {
+                PersonName = "John",
+                CountryID = country_response_from_add.CountryID
+            };
+            PersonResponse person_response_from_add =
+            _personService.AddPerson(personAddRequest);
+
+            PersonUpdateRequest personUpdateRequest =
+                person_response_from_add.ToPersonUpdateRequest();
+            personUpdateRequest.PersonName = null;
+            Assert.Throws<ArgumentException>(() =>
+            {
+                _personService.UpdatePerson(personUpdateRequest);
+            });
+        }
+
+        [Fact]
+        public void UpdatePerson_PersonFullDetails()
+        {
+            CountryAddRequest countryAddRequest = new CountryAddRequest() { CountryName = "UK" };
+            CountryResponse country_response_from_add =
+             _countriesService.AddCountry(countryAddRequest);
+
+            PersonAddRequest personAddRequest = new PersonAddRequest()
+            {
+                PersonName = "John",
+                CountryID = country_response_from_add.CountryID,
+                Address = "here",
+                Email = "aaa@gg.com",
+                DateOfBirth = DateTime.Now,
+                Gender = GenderOptions.Male,
+                ReceiveNewsLetters = true,
+            };
+            PersonResponse person_response_from_add =
+            _personService.AddPerson(personAddRequest);
+
+            PersonUpdateRequest personUpdateRequest =
+                person_response_from_add.ToPersonUpdateRequest();
+            personUpdateRequest.PersonName = "Will";
+            personUpdateRequest.Email = "hhh@gmail.com";
+
+            PersonResponse person_response_from_update =
+                _personService.UpdatePerson(personUpdateRequest);
+
+            PersonResponse? person_response_from_get =
+                _personService.GetPersonByPersonID(person_response_from_update.PersonID);
+            Assert.Equal(person_response_from_get, person_response_from_update);
+        }
+        #endregion
     }
 }
