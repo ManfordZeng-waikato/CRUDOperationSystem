@@ -204,5 +204,10 @@ namespace Services
 
             return matchimgPerson.ToPersonResponse();
         }
+
+        public bool DeletePerson(Guid personID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
