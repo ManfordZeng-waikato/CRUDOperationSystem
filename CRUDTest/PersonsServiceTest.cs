@@ -511,7 +511,9 @@ namespace CRUDTest
             PersonAddRequest personAddRequest = new PersonAddRequest()
             {
                 PersonName = "John",
-                CountryID = country_response_from_add.CountryID
+                CountryID = country_response_from_add.CountryID,
+                Email = "mmm@kk.com",
+                Gender = GenderOptions.Male,
             };
             PersonResponse person_response_from_add =
             _personService.AddPerson(personAddRequest);
