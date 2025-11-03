@@ -205,9 +205,16 @@ namespace Services
             return matchimgPerson.ToPersonResponse();
         }
 
-        public bool DeletePerson(Guid personID)
+        public bool DeletePerson(Guid? personID)
         {
-            throw new NotImplementedException();
+            if (personID == null) throw new ArgumentNullException(nameof(personID));
+
+            Person? person =
+            _persons.FirstOrDefault(temp => temp.PersonID == (personID));
+            if (person == null) return false;
+
+            _persons.Remove(person);
+            return true;
         }
     }
 }
