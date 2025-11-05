@@ -33,30 +33,54 @@
     <table class="table w-100 mt">
         <thead>
             <tr>
-                <th>Person Name</th>
-                <th>Email</th>
-                <th>Date of Birth</th>
-                <th>Age</th>
-                <th>Gender</th>
-                <th>Country</th>
-                <th>Address</th>
-                <th>Receive News Letters</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (PersonResponse person in Model)
-            {
-                <tr>
-                    <td>@person.PersonName</td>
-                    <td>@person.Email</td>
-                    <td>@person.DateOfBirth</td>
-                    <td>@person.Age</td>
-                    <td>@person.Gender</td>
-                    <td>@person.Country</td>
-                    <td>@person.Address</td>
-                    <td>@person.ReceiveNewsLetters</td>
+                @if (ViewBag.CurrentSortBy == nameof(PersonResponse.PersonName) && ViewBag.CurrentSortOrder == SortOrderOptions.ASC.ToString())
+                {
+                    <th>
+                        <a href="~/persons/index?searchBy=@ViewBag.CurrentSearchBy&searchString=@ViewBag.CurrentSearchString&sortBy=@nameof(PersonResponse.PersonName)&sortOrderOptions=@nameof(SortOrderOptions.DESC)">Person Name</a>
+                        <i class="fa-solid fa-sort-up"></i>
+                    </th>
+                }
+                else if (ViewBag.CurrentSortBy == nameof(PersonResponse.PersonName) && ViewBag.CurrentSortOrder == SortOrderOptions.DESC.ToString())
+                {
+                    <th>
+                        <a href="~/persons/index?searchBy=@ViewBag.CurrentSearchBy&searchString=@ViewBag.CurrentSearchString&sortBy=@nameof(PersonResponse.PersonName)&sortOrderOptions=@nameof(SortOrderOptions.ASC)">Person Name</a>
+                        <i class="fa-solid fa-sort-down"></i>
+                    </th>
+                }
+                else
+                {
+                    <th>
+                        <a href="~/persons/index?searchBy=@ViewBag.CurrentSearchBy&searchString=@ViewBag.CurrentSearchString&sortBy=@nameof(PersonResponse.PersonName)&sortOrderOptions=@nameof(SortOrderOptions.ASC)">Person Name</a>
+                    </th>
+                    
+                }
+
+
+
+
+                    <th>Email</th>
+                    <th>Date of Birth</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Country</th>
+                    <th>Address</th>
+                    <th>Receive News Letters</th>
                 </tr>
-            }
+            </thead>
+            <tbody>
+                @foreach (PersonResponse person in Model)
+                {
+                    <tr>
+                        <td>@person.PersonName</td>
+                        <td>@person.Email</td>
+                        <td>@person.DateOfBirth</td>
+                        <td>@person.Age</td>
+                        <td>@person.Gender</td>
+                        <td>@person.Country</td>
+                        <td>@person.Address</td>
+                        <td>@person.ReceiveNewsLetters</td>
+                    </tr>
+                }
             <tr></tr>
         </tbody>
 
