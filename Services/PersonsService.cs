@@ -44,6 +44,7 @@ namespace Services
                 GetCountryByCountryID(person.CountryID)?.CountryName;
             return personResponse;
         }
+
         public PersonResponse AddPerson(PersonAddRequest? personAddRequest)
         {
             if (personAddRequest == null)
@@ -63,7 +64,7 @@ namespace Services
         public List<PersonResponse> GetAllPersons()
         {
             return _persons.Select(temp =>
-            temp.ToPersonResponse()).ToList();
+           ConvertPersonToPersonResponse(temp)).ToList();
         }
 
         public PersonResponse? GetPersonByPersonID(Guid? personID)
@@ -74,7 +75,7 @@ namespace Services
             _persons.FirstOrDefault(temp => temp.PersonID == personID);
             if (person == null)
                 return null;
-            return person.ToPersonResponse();
+            return ConvertPersonToPersonResponse(person);
         }
 
         public List<PersonResponse> GetFilteredPersons(string searchBy, string? searchString)
@@ -226,7 +227,7 @@ namespace Services
             matchimgPerson.ReceiveNewsLetters = personUpdateRequest.ReceiveNewsLetters;
             matchimgPerson.CountryID = personUpdateRequest.CountryID;
 
-            return matchimgPerson.ToPersonResponse();
+            return ConvertPersonToPersonResponse(matchimgPerson);
         }
 
         public bool DeletePerson(Guid? personID)
