@@ -8,10 +8,12 @@ namespace CRUDOperationSystem.Controllers
     public class PersonsController : Controller
     {
         private readonly IPersonsService _personsService;
+        private readonly ICountriesService _countriesService;
 
-        public PersonsController(IPersonsService personsService)
+        public PersonsController(IPersonsService personsService, ICountriesService countriesService)
         {
             _personsService = personsService;
+            _countriesService = countriesService;
         }
 
         [Route("persons/index")]
@@ -39,6 +41,16 @@ namespace CRUDOperationSystem.Controllers
             ViewBag.CurrentSortOrder = sortOrderOptions.ToString();
 
             return View(sortedPerson);
+        }
+
+        [Route("persons/create")]
+        [HttpGet]
+        public IActionResult Create()
+        {
+            List<CountryResponse> countryResponses =
+            _countriesService.GetAllCountries();
+            ViewBag.Countries = countryResponses;
+            return View();
         }
     }
 }
