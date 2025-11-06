@@ -5,8 +5,10 @@ using ServiceContracts.Enums;
 
 namespace CRUDOperationSystem.Controllers
 {
+    [Route("[controller]")]
     public class PersonsController : Controller
     {
+
         private readonly IPersonsService _personsService;
         private readonly ICountriesService _countriesService;
 
@@ -16,7 +18,7 @@ namespace CRUDOperationSystem.Controllers
             _countriesService = countriesService;
         }
 
-        [Route("persons/index")]
+        [Route("[action]")]
         [Route("/")]
         public IActionResult Index(string searchBy, string? searchString, string sortBy = nameof(PersonResponse.PersonName), SortOrderOptions sortOrderOptions = SortOrderOptions.ASC)
         {
@@ -43,7 +45,7 @@ namespace CRUDOperationSystem.Controllers
             return View(sortedPerson);
         }
 
-        [Route("persons/create")]
+        [Route("[action]")]
         [HttpGet]
         public IActionResult Create()
         {
@@ -54,7 +56,7 @@ namespace CRUDOperationSystem.Controllers
         }
 
         [HttpPost]
-        [Route("persons/create")]
+        [Route("[action]")]
         public IActionResult Create(PersonAddRequest personAddRequest)
         {
             if (!ModelState.IsValid)
