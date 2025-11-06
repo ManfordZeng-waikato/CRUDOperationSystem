@@ -22,10 +22,12 @@ namespace ServiceContracts.DTO
         {
             get; set;
         }
+        [Required(ErrorMessage = "Please select your gender")]
         public GenderOptions? Gender
         {
             get; set;
         }
+        [Required(ErrorMessage = "Please select a country")]
         public Guid? CountryID
         {
             get; set;
