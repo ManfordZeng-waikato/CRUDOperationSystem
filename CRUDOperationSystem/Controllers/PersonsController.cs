@@ -52,5 +52,27 @@ namespace CRUDOperationSystem.Controllers
             ViewBag.Countries = countryResponses;
             return View();
         }
+
+        [HttpPost]
+        [Route("persons/create")]
+        public IActionResult Create(PersonAddRequest personAddRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                List<CountryResponse> countryResponses =
+                _countriesService.GetAllCountries();
+                ViewBag.Countries = countryResponses;
+
+                ViewBag.Errors = ModelState.Values.SelectMany(v =>
+                v.Errors).Select(e => e.ErrorMessage).ToList();
+                return View();
+            }
+
+            PersonResponse personResponse =
+            _personsService.AddPerson(personAddRequest);
+
+            //Made another get request to "persons/index", navigae to Index() action method
+            return RedirectToAction("Index", "Persons");
+        }
     }
 }
