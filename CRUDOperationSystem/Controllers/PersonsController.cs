@@ -84,5 +84,56 @@ namespace CRUDOperationSystem.Controllers
             //Made another get request to "persons/index", navigae to Index() action method
             return RedirectToAction("Index", "Persons");
         }
+
+        [HttpGet]
+        [Route("[action]/{personID}")]
+        public IActionResult Edit(Guid personID)
+        {
+            PersonResponse? personResponse =
+            _personsService.GetPersonByPersonID(personID);
+            if (personResponse == null)
+                return RedirectToAction("Index");
+
+            PersonUpdateRequest personUpdateRequest = personResponse.ToPersonUpdateRequest();
+
+            List<CountryResponse> countryResponses =
+           _countriesService.GetAllCountries();
+            ViewBag.Countries = countryResponses.Select(temp => new SelectListItem()
+            {
+                Text = temp.CountryName,
+                Value = temp.CountryID.ToString()
+            }
+            );
+
+            return View(personUpdateRequest);
+        }
+
+        [HttpPost]
+        [Route("[action]/{personID}")]
+        public IActionResult Edit(PersonUpdateRequest personUpdateRequest)
+        {
+            PersonResponse? personResponse =
+            _personsService.GetPersonByPersonID(personUpdateRequest.PersonID);
+
+            if (personResponse == null)
+                return RedirectToAction("Index");
+
+            if (ModelState.IsValid)
+            {
+                PersonResponse updatePerson =
+                _personsService.UpdatePerson(personUpdateRequest);
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                List<CountryResponse> countryResponses =
+                _countriesService.GetAllCountries();
+                ViewBag.Countries = countryResponses;
+
+                ViewBag.Errors = ModelState.Values.SelectMany(v =>
+                v.Errors).Select(e => e.ErrorMessage).ToList();
+                return View();
+            }
+        }
     }
 }
