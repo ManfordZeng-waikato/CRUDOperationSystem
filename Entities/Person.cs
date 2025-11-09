@@ -18,7 +18,6 @@ namespace Entities
         [StringLength(10)]
         public string? Gender { get; set; }
         public Guid? CountryID { get; set; }
-        public string? Country { get; set; }
         [StringLength(200)]
         public string? Address { get; set; }
         public bool ReceiveNewsLetters { get; set; }
