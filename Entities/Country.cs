@@ -16,5 +16,7 @@ namespace Entities
         {
             get; set;
         }
+
+        public virtual ICollection<Person>? Person { get; set; }
     }
 }
