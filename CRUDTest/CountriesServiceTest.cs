@@ -20,43 +20,43 @@ namespace CRUDTest
         #region AddCountry
         //when CountryAddRequest is null, it should throw ArgumentNullException
         [Fact]
-        public void AddCountry_NullCountry()
+        public async Task AddCountry_NullCountry()
         {
             //Arrange
             CountryAddRequest? request = null;
 
 
             //Assert
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                //Act
-                _countriesService.AddCountry(request);
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+              {
+                  //Act
+                  await _countriesService.AddCountry(request);
 
-            });
+              });
 
         }
 
         //when ContryName is null,it should throw ArgumentNullException
 
         [Fact]
-        public void AddCountry_CountryNameIsNull()
+        public async Task AddCountry_CountryNameIsNull()
         {
             //Arrange
             CountryAddRequest? request = new CountryAddRequest() { CountryName = null };
 
             //Assert
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                //Act
-                _countriesService.AddCountry(request);
+            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+             {
+                 //Act
+                 await _countriesService.AddCountry(request);
 
-            });
+             });
 
         }
 
         //when ContryName is duplicate,it should throw ArgumentNullException
         [Fact]
-        public void AddCountry_DuplicateCountryName()
+        public async Task AddCountry_DuplicateCountryName()
         {
             //Arrange
             CountryAddRequest? request1 = new CountryAddRequest() { CountryName = "USA" };
@@ -64,27 +64,27 @@ namespace CRUDTest
 
 
             //Assert
-            Assert.Throws<ArgumentException>(() =>
-            {
-                //Act
-                _countriesService.AddCountry(request1);
-                _countriesService.AddCountry(request2);
+            await Assert.ThrowsAsync<ArgumentException>(async () =>
+             {
+                 //Act
+                 await _countriesService.AddCountry(request1);
+                 await _countriesService.AddCountry(request2);
 
-            });
+             });
 
         }
 
         //when you supply propper  countryName,it should add the country to the existing list of countries
         [Fact]
-        public void AddCountry_ProperCountryDetails()
+        public async Task AddCountry_ProperCountryDetails()
         {
             //Arrange
             CountryAddRequest? request = new CountryAddRequest() { CountryName = "Japan" };
 
             //Act
-            CountryResponse countryResponse = _countriesService.AddCountry(request);
+            CountryResponse countryResponse = await _countriesService.AddCountry(request);
             List<CountryResponse> countries_from_GetAllCoutries =
-                _countriesService.GetAllCountries();
+               await _countriesService.GetAllCountries();
 
             //Assert
             Assert.True(countryResponse.CountryID != Guid.Empty);
@@ -95,10 +95,10 @@ namespace CRUDTest
         #region GetAllCountries
         [Fact]
         //The List of country should be empty by default
-        public void GetAllcountries_EmptyList()
+        public async Task GetAllcountries_EmptyList()
         {
             //Acts
-            List<CountryResponse> actual_country_response_list = _countriesService.GetAllCountries();
+            List<CountryResponse> actual_country_response_list = await _countriesService.GetAllCountries();
 
             //Assert
             Assert.Empty(actual_country_response_list);
@@ -106,7 +106,7 @@ namespace CRUDTest
         }
 
         [Fact]
-        public void GetAllcountries_AddFewCountries()
+        public async Task GetAllcountries_AddFewCountries()
         {
             //Arrange
             List<CountryAddRequest> country_request_list = new List<CountryAddRequest>()
@@ -118,12 +118,12 @@ namespace CRUDTest
             foreach (CountryAddRequest country_request in country_request_list)
             {
                 countries_list_from_add_country.Add
-               (_countriesService.AddCountry(country_request));
+               (await _countriesService.AddCountry(country_request));
             }
 
             //Act
             List<CountryResponse> actual_country_response_listt =
-            _countriesService.GetAllCountries();
+           await _countriesService.GetAllCountries();
 
             //read each element from countries_list_from_add_country
             foreach (CountryResponse expected_country in countries_list_from_add_country)
@@ -135,31 +135,31 @@ namespace CRUDTest
 
         #region GetCountryByCountryID
         [Fact]
-        public void GetCountryByCountryID_NullCountryID()
+        public async Task GetCountryByCountryID_NullCountryID()
         {
             //Arrange
             Guid? countryID = null;
 
             //Act
             CountryResponse? countryResponse =
-            _countriesService.GetCountryByCountryID(countryID);
+           await _countriesService.GetCountryByCountryID(countryID);
 
             //Assert
             Assert.Null(countryResponse);
         }
 
         [Fact]
-        public void GetCountryByCountryID_ValidCountryID()
+        public async Task GetCountryByCountryID_ValidCountryID()
         {
             //Arrange
             CountryAddRequest? request1 =
                 new CountryAddRequest() { CountryName = "USA" };
             CountryResponse country_response_from_add =
-                _countriesService.AddCountry(request1);
+               await _countriesService.AddCountry(request1);
 
             //Act
             CountryResponse? country_response_from_get =
-            _countriesService.GetCountryByCountryID
+            await _countriesService.GetCountryByCountryID
                 (country_response_from_add.CountryID);
 
             //Assert

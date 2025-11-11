@@ -19,7 +19,7 @@ namespace Services
         }
 
 
-        public PersonResponse AddPerson(PersonAddRequest? personAddRequest)
+        public async Task<PersonResponse> AddPerson(PersonAddRequest? personAddRequest)
         {
             if (personAddRequest == null)
                 throw new ArgumentNullException(nameof(personAddRequest));
@@ -32,14 +32,15 @@ namespace Services
             /* _db.Persons.Add(person);
              _db.SaveChanges();*/
             _db.sp_InsertPerson(person);
+            await _db.SaveChangesAsync();
 
             return person.ToPersonResponse();
 
         }
 
-        public List<PersonResponse> GetAllPersons()
+        public async Task<List<PersonResponse>> GetAllPersons()
         {
-            var persons = _db.Persons.Include("Country").ToList();
+            var persons = await _db.Persons.Include("Country").ToListAsync();
 
             return persons.Select(temp =>
            temp.ToPersonResponse()).ToList();
@@ -48,20 +49,20 @@ namespace Services
             // temp.ToPersonResponse()).ToList();
         }
 
-        public PersonResponse? GetPersonByPersonID(Guid? personID)
+        public async Task<PersonResponse?> GetPersonByPersonID(Guid? personID)
         {
             if (personID == null)
                 return null;
             Person? person =
-            _db.Persons.Include("Country").FirstOrDefault(temp => temp.PersonID == personID);
+           await _db.Persons.Include("Country").FirstOrDefaultAsync(temp => temp.PersonID == personID);
             if (person == null)
                 return null;
             return person.ToPersonResponse();
         }
 
-        public List<PersonResponse> GetFilteredPersons(string searchBy, string? searchString)
+        public async Task<List<PersonResponse>> GetFilteredPersons(string searchBy, string? searchString)
         {
-            List<PersonResponse> allPersons = GetAllPersons();
+            List<PersonResponse> allPersons = await GetAllPersons();
             List<PersonResponse> filteredPersons = allPersons;
             if (searchBy == null || searchString == null)
             {
@@ -118,77 +119,81 @@ namespace Services
             return filteredPersons;
         }
 
-        public List<PersonResponse> GetSortedPersons(List<PersonResponse> allpersons, string sortBy, SortOrderOptions sortOrder)
+        public async Task<List<PersonResponse>> GetSortedPersons(List<PersonResponse> allpersons, string sortBy, SortOrderOptions sortOrder)
         {
             if (sortBy == null)
                 return allpersons;
-            List<PersonResponse> SortedPersons = (sortBy, sortOrder) switch
-            {
-                (nameof(PersonResponse.PersonName), SortOrderOptions.ASC) =>
-                allpersons.OrderBy(temp => temp.PersonName,
-                StringComparer.OrdinalIgnoreCase).ToList(),
 
-                (nameof(PersonResponse.PersonName), SortOrderOptions.DESC) =>
-               allpersons.OrderByDescending(temp => temp.PersonName,
-               StringComparer.OrdinalIgnoreCase).ToList(),
+            return await Task.Run(() =>
+             {
+                 List<PersonResponse> SortedPersons = (sortBy, sortOrder) switch
+                 {
+                     (nameof(PersonResponse.PersonName), SortOrderOptions.ASC) =>
+                     allpersons.OrderBy(temp => temp.PersonName,
+                     StringComparer.OrdinalIgnoreCase).ToList(),
 
-                (nameof(PersonResponse.Email), SortOrderOptions.ASC) =>
-                allpersons.OrderBy(temp => temp.Email,
-                StringComparer.OrdinalIgnoreCase).ToList(),
+                     (nameof(PersonResponse.PersonName), SortOrderOptions.DESC) =>
+                    allpersons.OrderByDescending(temp => temp.PersonName,
+                    StringComparer.OrdinalIgnoreCase).ToList(),
 
-                (nameof(PersonResponse.Email), SortOrderOptions.DESC) =>
-               allpersons.OrderByDescending(temp => temp.Email,
-               StringComparer.OrdinalIgnoreCase).ToList(),
+                     (nameof(PersonResponse.Email), SortOrderOptions.ASC) =>
+                     allpersons.OrderBy(temp => temp.Email,
+                     StringComparer.OrdinalIgnoreCase).ToList(),
 
-                (nameof(PersonResponse.DateOfBirth), SortOrderOptions.ASC) =>
-                 allpersons.OrderBy(temp => temp.DateOfBirth).ToList(),
+                     (nameof(PersonResponse.Email), SortOrderOptions.DESC) =>
+                    allpersons.OrderByDescending(temp => temp.Email,
+                    StringComparer.OrdinalIgnoreCase).ToList(),
 
-                (nameof(PersonResponse.DateOfBirth), SortOrderOptions.DESC) =>
-               allpersons.OrderByDescending(temp => temp.DateOfBirth).ToList(),
+                     (nameof(PersonResponse.DateOfBirth), SortOrderOptions.ASC) =>
+                      allpersons.OrderBy(temp => temp.DateOfBirth).ToList(),
 
-                (nameof(PersonResponse.Age), SortOrderOptions.ASC) =>
-                 allpersons.OrderBy(temp => temp.Age).ToList(),
+                     (nameof(PersonResponse.DateOfBirth), SortOrderOptions.DESC) =>
+                    allpersons.OrderByDescending(temp => temp.DateOfBirth).ToList(),
 
-                (nameof(PersonResponse.Age), SortOrderOptions.DESC) =>
-               allpersons.OrderByDescending(temp => temp.Age).ToList(),
+                     (nameof(PersonResponse.Age), SortOrderOptions.ASC) =>
+                      allpersons.OrderBy(temp => temp.Age).ToList(),
 
-                (nameof(PersonResponse.Gender), SortOrderOptions.ASC) =>
-                allpersons.OrderBy(temp => temp.Gender,
-                StringComparer.OrdinalIgnoreCase).ToList(),
+                     (nameof(PersonResponse.Age), SortOrderOptions.DESC) =>
+                    allpersons.OrderByDescending(temp => temp.Age).ToList(),
 
-                (nameof(PersonResponse.Gender), SortOrderOptions.DESC) =>
-               allpersons.OrderByDescending(temp => temp.Gender,
-               StringComparer.OrdinalIgnoreCase).ToList(),
+                     (nameof(PersonResponse.Gender), SortOrderOptions.ASC) =>
+                     allpersons.OrderBy(temp => temp.Gender,
+                     StringComparer.OrdinalIgnoreCase).ToList(),
 
-                (nameof(PersonResponse.Country), SortOrderOptions.ASC) =>
-                allpersons.OrderBy(temp => temp.Country,
-                StringComparer.OrdinalIgnoreCase).ToList(),
+                     (nameof(PersonResponse.Gender), SortOrderOptions.DESC) =>
+                    allpersons.OrderByDescending(temp => temp.Gender,
+                    StringComparer.OrdinalIgnoreCase).ToList(),
 
-                (nameof(PersonResponse.Country), SortOrderOptions.DESC) =>
-               allpersons.OrderByDescending(temp => temp.Country,
-               StringComparer.OrdinalIgnoreCase).ToList(),
+                     (nameof(PersonResponse.Country), SortOrderOptions.ASC) =>
+                     allpersons.OrderBy(temp => temp.Country,
+                     StringComparer.OrdinalIgnoreCase).ToList(),
 
-                (nameof(PersonResponse.Address), SortOrderOptions.ASC) =>
-                allpersons.OrderBy(temp => temp.Address,
-                StringComparer.OrdinalIgnoreCase).ToList(),
+                     (nameof(PersonResponse.Country), SortOrderOptions.DESC) =>
+                    allpersons.OrderByDescending(temp => temp.Country,
+                    StringComparer.OrdinalIgnoreCase).ToList(),
 
-                (nameof(PersonResponse.Address), SortOrderOptions.DESC) =>
-               allpersons.OrderByDescending(temp => temp.Address,
-               StringComparer.OrdinalIgnoreCase).ToList(),
+                     (nameof(PersonResponse.Address), SortOrderOptions.ASC) =>
+                     allpersons.OrderBy(temp => temp.Address,
+                     StringComparer.OrdinalIgnoreCase).ToList(),
 
-                (nameof(PersonResponse.ReceiveNewsLetters), SortOrderOptions.ASC) =>
-                allpersons.OrderBy(temp => temp.ReceiveNewsLetters).ToList(),
+                     (nameof(PersonResponse.Address), SortOrderOptions.DESC) =>
+                    allpersons.OrderByDescending(temp => temp.Address,
+                    StringComparer.OrdinalIgnoreCase).ToList(),
 
-                (nameof(PersonResponse.ReceiveNewsLetters), SortOrderOptions.DESC) =>
-               allpersons.OrderByDescending(temp => temp.ReceiveNewsLetters).ToList(),
+                     (nameof(PersonResponse.ReceiveNewsLetters), SortOrderOptions.ASC) =>
+                     allpersons.OrderBy(temp => temp.ReceiveNewsLetters).ToList(),
 
-                _ => allpersons
-            };
+                     (nameof(PersonResponse.ReceiveNewsLetters), SortOrderOptions.DESC) =>
+                    allpersons.OrderByDescending(temp => temp.ReceiveNewsLetters).ToList(),
 
-            return SortedPersons;
+                     _ => allpersons
+                 };
+
+                 return SortedPersons;
+             });
         }
 
-        public PersonResponse UpdatePerson(PersonUpdateRequest? personUpdateRequest)
+        public async Task<PersonResponse> UpdatePerson(PersonUpdateRequest? personUpdateRequest)
         {
             if (personUpdateRequest == null)
                 throw new ArgumentNullException(nameof(personUpdateRequest));
@@ -196,7 +201,7 @@ namespace Services
             ValidationHelper.ModelValidation(personUpdateRequest);
 
             Person? matchimgPerson =
-            _db.Persons.FirstOrDefault(temp => temp.PersonID == personUpdateRequest.PersonID);
+            await _db.Persons.FirstOrDefaultAsync(temp => temp.PersonID == personUpdateRequest.PersonID);
             if (matchimgPerson == null)
                 throw new ArgumentException("Given person ID doesn't exist");
 
@@ -207,23 +212,23 @@ namespace Services
             matchimgPerson.DateOfBirth = personUpdateRequest.DateOfBirth;
             matchimgPerson.ReceiveNewsLetters = personUpdateRequest.ReceiveNewsLetters;
             matchimgPerson.CountryID = personUpdateRequest.CountryID;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
             return matchimgPerson.ToPersonResponse();
         }
 
-        public bool DeletePerson(Guid? personID)
+        public async Task<bool> DeletePerson(Guid? personID)
         {
             if (personID == null)
                 throw new ArgumentNullException(nameof(personID));
 
             Person? person =
-            _db.Persons.FirstOrDefault(temp => temp.PersonID == (personID));
+           await _db.Persons.FirstOrDefaultAsync(temp => temp.PersonID == (personID));
             if (person == null)
                 return false;
 
             _db.Persons.Remove(person);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return true;
         }
     }

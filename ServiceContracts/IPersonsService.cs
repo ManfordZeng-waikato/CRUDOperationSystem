@@ -5,10 +5,10 @@ namespace ServiceContracts
 {
     public interface IPersonsService
     {
-        PersonResponse AddPerson(PersonAddRequest? personAddRequest);
+        Task<PersonResponse> AddPerson(PersonAddRequest? personAddRequest);
 
-        List<PersonResponse> GetAllPersons();
-        PersonResponse? GetPersonByPersonID(Guid? personID);
+        Task<List<PersonResponse>> GetAllPersons();
+        Task<PersonResponse?> GetPersonByPersonID(Guid? personID);
 
         /// <summary>
         /// 
@@ -16,7 +16,7 @@ namespace ServiceContracts
         /// <param name="searchBy">Field to search</param>
         /// <param name="searchString">Content to search</param>
         /// <returns></returns>
-        List<PersonResponse> GetFilteredPersons(string searchBy, string? searchString);
+        Task<List<PersonResponse>> GetFilteredPersons(string searchBy, string? searchString);
 
         /// <summary>
         /// /
@@ -25,21 +25,21 @@ namespace ServiceContracts
         /// <param name="sortBy">Name of the property(key)</param>
         /// <param name="sortOrder">ASC or DESC</param>
         /// <returns>Sorted persons as PersonResponse list</returns>
-        List<PersonResponse> GetSortedPersons(List<PersonResponse> allpersons, string sortBy,
-            SortOrderOptions sortOrder);
+        Task<List<PersonResponse>> GetSortedPersons(List<PersonResponse> allpersons, string sortBy,
+             SortOrderOptions sortOrder);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="personUpdateRequest">Person details to update, including person ID</param>
         /// <returns></returns>
-        PersonResponse UpdatePerson(PersonUpdateRequest? personUpdateRequest);
+        Task<PersonResponse> UpdatePerson(PersonUpdateRequest? personUpdateRequest);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="personID"></param>
         /// <returns>true:the deletion is successful, otherwise unsuccessful</returns>
-        bool DeletePerson(Guid? personID);
+        Task<bool> DeletePerson(Guid? personID);
     }
 }
