@@ -15,9 +15,12 @@
             </div>
             <ul>
                 <li>
-                    <a href="~/persons/index" style="font-size: 24px; font-weight: bold;">
+                    <a asp-controller="Persons" asp-action="Index" style="font-size: 24px; font-weight: bold;">
                         Persons
                     </a>
+                    <a asp-controller="Countries" asp-action="UploadFromExcel" style="font-size: 24px; font-weight: bold;">
+                        Upload Countries
+                        </a>
                 </li>
             </ul>
         </div>

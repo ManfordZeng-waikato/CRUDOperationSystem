@@ -53,6 +53,9 @@ namespace CRUDOperationSystem.Controllers
         {
             List<CountryResponse> countryResponses = await
             _countriesService.GetAllCountries();
+
+
+
             ViewBag.Countries = countryResponses.Select(temp => new SelectListItem()
             {
                 Text = temp.CountryName,

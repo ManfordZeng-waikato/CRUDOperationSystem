@@ -44,7 +44,9 @@ namespace Services
 
         public async Task<List<CountryResponse>> GetAllCountries()
         {
-            return await _db.Countries.Select(country =>
+            return await _db.Countries
+                .OrderBy(c => c.CountryName)
+                .Select(country =>
             country.ToCountryResponse()).ToListAsync();
         }
 
@@ -76,8 +78,6 @@ namespace Services
                 ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["Countries"];
 
                 int rowCount = worksheet.Dimension.Rows;
-
-
                 for (int row = 2; row <= rowCount; row++)
                 {
                     string? cellValue =
