@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Entities.Migrations
 {
-    [DbContext(typeof(PersonsDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20251110042309_TIN_Updated_FixLengthTo1_0")]
     partial class TIN_Updated_FixLengthTo1_0
     {

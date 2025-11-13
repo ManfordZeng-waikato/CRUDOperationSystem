@@ -13,10 +13,10 @@ namespace Services
 {
     public class PersonsService : IPersonsService
     {
-        private readonly PersonsDbContext _db;
+        private readonly ApplicationDbContext _db;
         private readonly ICountriesService _countriesService;
 
-        public PersonsService(PersonsDbContext personsDbContext, ICountriesService countriesService)
+        public PersonsService(ApplicationDbContext personsDbContext, ICountriesService countriesService)
         {
             _db = personsDbContext;
             _countriesService = countriesService;
@@ -33,10 +33,10 @@ namespace Services
 
             Person person = personAddRequest.ToPerson();
             person.PersonID = Guid.NewGuid();
-            /* _db.Persons.Add(person);
-             _db.SaveChanges();*/
-            _db.sp_InsertPerson(person);
+            _db.Persons.Add(person);
             await _db.SaveChangesAsync();
+            /*_db.sp_InsertPerson(person);
+            await _db.SaveChangesAsync();*/
 
             return person.ToPersonResponse();
 
