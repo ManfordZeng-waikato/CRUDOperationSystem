@@ -64,6 +64,12 @@ namespace Repository
 
             int countUpdated = await _db.SaveChangesAsync();
             return person_to_be_updated;
+
+            /* _db.Persons.Update(person);
+             await _db.SaveChangesAsync();
+             return person;*/
         }
+
+
     }
 }
