@@ -3,6 +3,8 @@ using Entities;
 using EntityFrameworkCoreMock;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
+using RepositoryContract;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
@@ -17,8 +19,13 @@ namespace CRUDTest
         private readonly ICountriesService _countriesService;
         private readonly ITestOutputHelper _testOutputHelper;
         private readonly IFixture _fixture;
+        private readonly IPersonsRepository _personRepository;
+        private readonly Mock<IPersonsRepository> _personRepositoryMock;
         public PersonsServiceTest(ITestOutputHelper testOutputHelper)
         {
+            _personRepositoryMock = new Mock<IPersonsRepository>();
+            _personRepository = _personRepositoryMock.Object;
+
             _fixture = new Fixture();
             var countriesInitialData = new List<Country>() { };
             var personsInitialData = new List<Person>() { };
@@ -32,7 +39,7 @@ namespace CRUDTest
 
             _countriesService = new CountriesService(null);
 
-            _personService = new PersonsService(null);
+            _personService = new PersonsService(_personRepository);
 
             _testOutputHelper = testOutputHelper;
         }
@@ -65,23 +72,25 @@ namespace CRUDTest
         }
 
         [Fact]
-        public async Task AddPerson_ProperPersonDetails()
+        public async Task AddPerson_ProperPersonDetails_ToBeSuccessful()
         {
             PersonAddRequest? personAddRequest =
                 _fixture.Build<PersonAddRequest>()
                 .With(temp => temp.Email, "example@gg.com")
                 .Create();
+            Person person = personAddRequest.ToPerson();
+            PersonResponse person_response_expected = person.ToPersonResponse();
+            _personRepositoryMock.Setup(temp => temp.AddPerson(It.IsAny<Person>()))
+                .ReturnsAsync(person);
+
             PersonResponse person_response_from_add =
               await _personService.AddPerson(personAddRequest);
+            person_response_expected.PersonID = person_response_from_add.PersonID;
 
-            List<PersonResponse> persons_list =
-           await _personService.GetAllPersons();
 
             //Assert.True(person_response_from_add.PersonID != Guid.Empty);
             person_response_from_add.PersonID.Should().NotBe(Guid.Empty);
-
-            //Assert.Contains(person_response_from_add, persons_list);
-            persons_list.Should().Contain(person_response_from_add);
+            person_response_from_add.Should().Be(person_response_expected);
         }
 
         #endregion
