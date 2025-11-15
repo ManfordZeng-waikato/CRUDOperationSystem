@@ -27,6 +27,14 @@ namespace CRUDTest
             _personRepository = _personRepositoryMock.Object;
 
             _fixture = new Fixture();
+            _fixture.Behaviors
+            .OfType<ThrowingRecursionBehavior>()
+            .ToList()
+            .ForEach(b => _fixture.Behaviors.Remove(b));
+
+
+            _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+
             var countriesInitialData = new List<Country>() { };
             var personsInitialData = new List<Person>() { };
 
@@ -46,7 +54,7 @@ namespace CRUDTest
 
         #region AddPerson
         [Fact]
-        public async Task AddPerson_NullPerson()
+        public async Task AddPerson_NullPerson_ToBeArgumentNullException()
         {
             PersonAddRequest? personAddRequest = null;
             Func<Task> action = async () =>
@@ -57,13 +65,15 @@ namespace CRUDTest
         }
 
         [Fact]
-        public async Task AddPerson_PersonNameIsNull()
+        public async Task AddPerson_PersonNameIsNull_ToBeArgumentException()
         {
             PersonAddRequest? personAddRequest =
                 _fixture.Build<PersonAddRequest>()
                 .With(temp => temp.PersonName, null as string)
                 .Create();
-
+            Person person = personAddRequest.ToPerson();
+            _personRepositoryMock.Setup(temp => temp.AddPerson(It.IsAny<Person>()))
+                .ReturnsAsync(person);
             Func<Task> action = async () =>
               {
                   await _personService.AddPerson(personAddRequest);
@@ -97,7 +107,7 @@ namespace CRUDTest
 
         #region GetPersonByPersonID
         [Fact]
-        public async Task GetPersonByPersonID_NullPersonID()
+        public async Task GetPersonByPersonID_NullPersonID_ToBeNull()
         {
             Guid personID = Guid.Empty;
 
@@ -109,24 +119,23 @@ namespace CRUDTest
         }
 
         [Fact]
-        public async Task GetPersonByPersonID_WithPersonID()
+        public async Task GetPersonByPersonID_WithPersonID_ToBeSuccessful()
         {
-            CountryAddRequest countryAddRequest =
-                _fixture.Create<CountryAddRequest>();
-            CountryResponse countryResponse =
-               await _countriesService.AddCountry(countryAddRequest);
 
-            PersonAddRequest personAddRequest = _fixture.Build<PersonAddRequest>()
+
+            Person person_request = _fixture.Build<Person>()
                 .With(p => p.Email, "sample@gg.com")
                 .Create();
-            PersonResponse personResponse =
-           await _personService.AddPerson(personAddRequest);
+            PersonResponse person_response_expected = person_request.ToPersonResponse();
+
+            _personRepositoryMock.Setup(temp => temp.GetPersonByPersonID(person_request.PersonID))
+                .ReturnsAsync(person_request);
 
             PersonResponse? personResponseFromGet =
-           await _personService.GetPersonByPersonID(personResponse.PersonID);
+           await _personService.GetPersonByPersonID(person_request.PersonID);
 
             //Assert.Equal(personResponse, personResponseFromGet);
-            personResponseFromGet.Should().Be(personResponse);
+            personResponseFromGet.Should().Be(person_response_expected);
         }
 
         #endregion
