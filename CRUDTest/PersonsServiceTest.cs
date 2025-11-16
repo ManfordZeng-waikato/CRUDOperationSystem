@@ -1,8 +1,6 @@
 ﻿using AutoFixture;
 using Entities;
-using EntityFrameworkCoreMock;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using RepositoryContract;
 using ServiceContracts;
@@ -17,7 +15,6 @@ namespace CRUDTest
     public class PersonsServiceTest
     {
         private readonly IPersonsService _personService;
-        private readonly ICountriesService _countriesService;
         private readonly ITestOutputHelper _testOutputHelper;
         private readonly IFixture _fixture;
         private readonly IPersonsRepository _personRepository;
@@ -28,19 +25,6 @@ namespace CRUDTest
             _personRepository = _personRepositoryMock.Object;
 
             _fixture = new Fixture();
-
-
-            var countriesInitialData = new List<Country>() { };
-            var personsInitialData = new List<Person>() { };
-
-            DbContextMock<ApplicationDbContext> dbContextMock =
-            new DbContextMock<ApplicationDbContext>(new DbContextOptionsBuilder<ApplicationDbContext>().Options);
-
-            ApplicationDbContext dbContext = dbContextMock.Object;
-            dbContextMock.CreateDbSetMock(temp => temp.Countries, countriesInitialData);
-            dbContextMock.CreateDbSetMock(temp => temp.Persons, personsInitialData);
-
-            _countriesService = new CountriesService(null);
 
             _personService = new PersonsService(_personRepository);
 
@@ -393,24 +377,17 @@ namespace CRUDTest
         [Fact]
         public async Task UpdatePerson_NullPersonName_ToBeArgumentException()
         {
-
-
-            CountryAddRequest countryCodeAddRequest = _fixture.Create<CountryAddRequest>();
-
-            CountryResponse countryResponse =
-           await _countriesService.AddCountry(countryCodeAddRequest);
-
-            PersonAddRequest personAddRequest = _fixture.Build<PersonAddRequest>()
-                .With(p => p.Email, "444@gg.com")
-                .With(p => p.PersonName, "Manford2")
-                .With(p => p.CountryID, countryResponse.CountryID)
-                .Create();
-            PersonResponse person_response_from_add =
-           await _personService.AddPerson(personAddRequest);
+            Person person = _fixture.Build<Person>()
+                .With(p => p.PersonName, null as string)
+                 .With(p => p.Email, "222@gg.com")
+                 .With(p => p.Country, null as Country)
+                  .With(p => p.Gender, "Male")
+                 .Create();
+            PersonResponse person_response_from_add = person.ToPersonResponse();
 
             PersonUpdateRequest personUpdateRequest =
                 person_response_from_add.ToPersonUpdateRequest();
-            personUpdateRequest.PersonName = null;
+
             Func<Task> action = async () =>
               {
                   await _personService.UpdatePerson(personUpdateRequest);
@@ -421,32 +398,29 @@ namespace CRUDTest
         [Fact]
         public async Task UpdatePerson_PersonFullDetails()
         {
-            CountryAddRequest countryCodeAddRequest = _fixture.Create<CountryAddRequest>();
-
-            CountryResponse countryResponse =
-           await _countriesService.AddCountry(countryCodeAddRequest);
-
-            PersonAddRequest personAddRequest = _fixture.Build<PersonAddRequest>()
+            Person person = _fixture.Build<Person>()
                 .With(p => p.Email, "444@gg.com")
                 .With(p => p.PersonName, "Manford2")
-                .With(p => p.CountryID, countryResponse.CountryID)
+                .With(p => p.Gender, "Male")
+                .With(p => p.Country, null as Country)
                 .Create();
-            PersonResponse person_response_from_add =
-           await _personService.AddPerson(personAddRequest);
+            PersonResponse person_response_expected = person.ToPersonResponse();
 
             PersonUpdateRequest personUpdateRequest =
-                person_response_from_add.ToPersonUpdateRequest();
-            personUpdateRequest.PersonName = "Will";
-            personUpdateRequest.Email = "hhh@gmail.com";
+                person_response_expected.ToPersonUpdateRequest();
+
+            _personRepositoryMock.Setup(temp => temp.UpdatePerson(It.IsAny<Person>()))
+                .ReturnsAsync(person);
+
+            _personRepositoryMock.Setup(temp => temp.GetPersonByPersonID(It.IsAny<Guid>()))
+               .ReturnsAsync(person);
 
             PersonResponse person_response_from_update =
                await _personService.UpdatePerson(personUpdateRequest);
 
-            PersonResponse? person_response_from_get =
-               await _personService.GetPersonByPersonID(person_response_from_update.PersonID);
             //Assert.Equal(person_response_from_get, person_response_from_update);
             person_response_from_update.Should()
-                .BeEquivalentTo(person_response_from_get);
+                .BeEquivalentTo(person_response_expected);
         }
         #endregion
 
@@ -454,21 +428,22 @@ namespace CRUDTest
         [Fact]
         public async Task DeletePerson_ValidPersonID()
         {
-            CountryAddRequest countryCodeAddRequest = _fixture.Create<CountryAddRequest>();
 
-            CountryResponse countryResponse =
-           await _countriesService.AddCountry(countryCodeAddRequest);
-
-            PersonAddRequest personAddRequest = _fixture.Build<PersonAddRequest>()
+            Person person = _fixture.Build<Person>()
                 .With(p => p.Email, "444@gg.com")
                 .With(p => p.PersonName, "Manford2")
-                .With(p => p.CountryID, countryResponse.CountryID)
+                .With(p => p.Country, null as Country)
+                .With(p => p.Gender, "Male")
                 .Create();
-            PersonResponse person_response_from_add =
-           await _personService.AddPerson(personAddRequest);
+
+
+            _personRepositoryMock.Setup(temp => temp.DeletePersonByPersonID(It.IsAny<Guid>()))
+                .ReturnsAsync(true);
+            _personRepositoryMock.Setup(temp => temp.GetPersonByPersonID(It.IsAny<Guid>()))
+                .ReturnsAsync(person);
 
             bool isDelete =
-           await _personService.DeletePerson(person_response_from_add.PersonID);
+           await _personService.DeletePerson(person.PersonID);
 
             //Assert.True(isDelete);
             isDelete.Should().BeTrue();
