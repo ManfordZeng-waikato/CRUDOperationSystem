@@ -79,7 +79,7 @@ namespace CRUDOperationSystem.Controllers
 
                 ViewBag.Errors = ModelState.Values.SelectMany(v =>
                 v.Errors).Select(e => e.ErrorMessage).ToList();
-                return View();
+                return View(personAddRequest);
             }
 
             PersonResponse personResponse =
