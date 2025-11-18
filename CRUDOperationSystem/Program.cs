@@ -10,8 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 var license = new EPPlusLicense();
 license.SetNonCommercialPersonal("Manford Zeng");
 
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields = Microsoft.AspNetCore.HttpLogging.HttpLoggingFields.All;
+    options.RequestBodyLogLimit = 4096;
+    options.ResponseBodyLogLimit = 4096;
+});
+
 builder.Logging
-       .ClearProviders().AddConsole().AddDebug().AddEventLog();
+       .ClearProviders().AddConsole().AddDebug();
 
 
 builder.Services.AddControllersWithViews();
@@ -51,6 +58,7 @@ var app = builder.Build();
 //app.Logger.LogError("error-message");
 //app.Logger.LogCritical("critical-message");
 
+app.UseHttpLogging();
 
 if (builder.Environment.IsDevelopment())
 {
