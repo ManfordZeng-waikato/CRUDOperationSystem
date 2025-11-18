@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 var license = new EPPlusLicense();
 license.SetNonCommercialPersonal("Manford Zeng");
 
+builder.Logging
+       .ClearProviders().AddConsole().AddDebug().AddEventLog();
+
 
 builder.Services.AddControllersWithViews();
 
@@ -42,11 +45,11 @@ Multi Subnet Failover=False*/
 
 var app = builder.Build();
 
-app.Logger.LogDebug("debug-message");
-app.Logger.LogInformation("information-message");
-app.Logger.LogWarning("warning-message");
-app.Logger.LogError("error-message");
-app.Logger.LogCritical("critical-message");
+//app.Logger.LogDebug("debug-message");
+//app.Logger.LogInformation("information-message");
+//app.Logger.LogWarning("warning-message");
+//app.Logger.LogError("error-message");
+//app.Logger.LogCritical("critical-message");
 
 
 if (builder.Environment.IsDevelopment())
