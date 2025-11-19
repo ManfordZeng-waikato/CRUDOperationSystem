@@ -59,6 +59,7 @@ Application Intent = ReadWrite;
 Multi Subnet Failover=False*/
 
 var app = builder.Build();
+app.UseSerilogRequestLogging();
 
 //app.Logger.LogDebug("debug-message");
 //app.Logger.LogInformation("information-message");
@@ -66,7 +67,7 @@ var app = builder.Build();
 //app.Logger.LogError("error-message");
 //app.Logger.LogCritical("critical-message");
 
-app.UseHttpLogging();
+//app.UseHttpLogging();
 
 if (builder.Environment.IsDevelopment())
 {

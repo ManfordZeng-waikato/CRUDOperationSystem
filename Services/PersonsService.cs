@@ -4,6 +4,7 @@ using Entities;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using RepositoryContract;
+using Serilog;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
@@ -16,11 +17,13 @@ namespace Services
     {
         private readonly IPersonsRepository _personsRepository;
         private readonly ILogger<PersonsService> _logger;
+        private readonly IDiagnosticContext _diagnosticContext;
 
-        public PersonsService(IPersonsRepository personsRepository, ILogger<PersonsService> logger)
+        public PersonsService(IPersonsRepository personsRepository, ILogger<PersonsService> logger, IDiagnosticContext diagnosticContext)
         {
             _personsRepository = personsRepository;
             _logger = logger;
+            _diagnosticContext = diagnosticContext;
         }
 
 
@@ -69,43 +72,47 @@ namespace Services
         {
             _logger.LogInformation("GetFilteredPersons of PersonsService");
             searchString = searchString?.Trim();
+            List<Person> persons;
+
             if (string.IsNullOrWhiteSpace(searchString))
             {
-                var allPersons = await _personsRepository.GetAllPersons();
-                return allPersons.Select(p => p.ToPersonResponse()).ToList();
+                persons = await _personsRepository.GetAllPersons();
             }
-
-
-            List<Person> persons = searchBy switch
+            else
             {
-                nameof(PersonResponse.PersonName) =>
-            await _personsRepository.GetFilteredPersons(temp =>
-                temp.PersonName != null && temp.PersonName.Contains(searchString)),
+                persons = searchBy switch
+                {
+                    nameof(PersonResponse.PersonName) =>
+                await _personsRepository.GetFilteredPersons(temp =>
+                    temp.PersonName != null && temp.PersonName.Contains(searchString)),
 
-                nameof(PersonResponse.Email) =>
-                    await _personsRepository.GetFilteredPersons(temp =>
-                        temp.Email != null && temp.Email.Contains(searchString)),
+                    nameof(PersonResponse.Email) =>
+                        await _personsRepository.GetFilteredPersons(temp =>
+                            temp.Email != null && temp.Email.Contains(searchString)),
 
+                    nameof(PersonResponse.DateOfBirth) =>
+                        await GetPersonsFilteredByDateOfBirth(searchString),
 
-                nameof(PersonResponse.DateOfBirth) =>
-                    await GetPersonsFilteredByDateOfBirth(searchString),
+                    nameof(PersonResponse.Gender) =>
+                        await _personsRepository.GetFilteredPersons(temp =>
+                            temp.Gender != null && temp.Gender.Contains(searchString)),
 
-                nameof(PersonResponse.Gender) =>
-                    await _personsRepository.GetFilteredPersons(temp =>
-                        temp.Gender != null && temp.Gender.Contains(searchString)),
+                    nameof(PersonResponse.CountryID) =>
+                        await _personsRepository.GetFilteredPersons(temp =>
+                            temp.Country != null &&
+                            temp.Country.CountryName.Contains(searchString)),
 
-                nameof(PersonResponse.CountryID) =>
-                    await _personsRepository.GetFilteredPersons(temp =>
-                        temp.Country != null &&
-                        temp.Country.CountryName.Contains(searchString)),
+                    nameof(PersonResponse.Address) =>
+                        await _personsRepository.GetFilteredPersons(temp =>
+                            temp.Address != null && temp.Address.Contains(searchString)),
 
-                nameof(PersonResponse.Address) =>
-                    await _personsRepository.GetFilteredPersons(temp =>
-                        temp.Address != null && temp.Address.Contains(searchString)),
+                    _ => await _personsRepository.GetAllPersons(),
+                };
+            }
+            _diagnosticContext.Set("PersonsCount", persons.Count);
+            _diagnosticContext.Set("SearchBy", searchBy);
+            _diagnosticContext.Set("SearchString", searchString);
 
-
-                _ => await _personsRepository.GetAllPersons(),
-            };
             return persons.Select(p => p.ToPersonResponse()).ToList();
         }
 
