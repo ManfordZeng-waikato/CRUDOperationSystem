@@ -80,34 +80,37 @@ namespace Services
             }
             else
             {
-                persons = searchBy switch
+                using (SerilogTimings.Operation.Time("Time for Filtered Persons from Database"))
                 {
-                    nameof(PersonResponse.PersonName) =>
-                await _personsRepository.GetFilteredPersons(temp =>
-                    temp.PersonName != null && temp.PersonName.Contains(searchString)),
+                    persons = searchBy switch
+                    {
+                        nameof(PersonResponse.PersonName) =>
+                    await _personsRepository.GetFilteredPersons(temp =>
+                        temp.PersonName != null && temp.PersonName.Contains(searchString)),
 
-                    nameof(PersonResponse.Email) =>
-                        await _personsRepository.GetFilteredPersons(temp =>
-                            temp.Email != null && temp.Email.Contains(searchString)),
+                        nameof(PersonResponse.Email) =>
+                            await _personsRepository.GetFilteredPersons(temp =>
+                                temp.Email != null && temp.Email.Contains(searchString)),
 
-                    nameof(PersonResponse.DateOfBirth) =>
-                        await GetPersonsFilteredByDateOfBirth(searchString),
+                        nameof(PersonResponse.DateOfBirth) =>
+                            await GetPersonsFilteredByDateOfBirth(searchString),
 
-                    nameof(PersonResponse.Gender) =>
-                        await _personsRepository.GetFilteredPersons(temp =>
-                            temp.Gender != null && temp.Gender.Contains(searchString)),
+                        nameof(PersonResponse.Gender) =>
+                            await _personsRepository.GetFilteredPersons(temp =>
+                                temp.Gender != null && temp.Gender.Contains(searchString)),
 
-                    nameof(PersonResponse.CountryID) =>
-                        await _personsRepository.GetFilteredPersons(temp =>
-                            temp.Country != null &&
-                            temp.Country.CountryName.Contains(searchString)),
+                        nameof(PersonResponse.CountryID) =>
+                            await _personsRepository.GetFilteredPersons(temp =>
+                                temp.Country != null &&
+                                temp.Country.CountryName.Contains(searchString)),
 
-                    nameof(PersonResponse.Address) =>
-                        await _personsRepository.GetFilteredPersons(temp =>
-                            temp.Address != null && temp.Address.Contains(searchString)),
+                        nameof(PersonResponse.Address) =>
+                            await _personsRepository.GetFilteredPersons(temp =>
+                                temp.Address != null && temp.Address.Contains(searchString)),
 
-                    _ => await _personsRepository.GetAllPersons(),
-                };
+                        _ => await _personsRepository.GetAllPersons(),
+                    };
+                }
             }
             _diagnosticContext.Set("PersonsCount", persons.Count);
             _diagnosticContext.Set("SearchBy", searchBy);
