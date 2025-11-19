@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using Repository;
 using RepositoryContract;
+using Serilog;
 using ServiceContracts;
 using Services;
 
@@ -17,8 +18,15 @@ builder.Services.AddHttpLogging(options =>
     options.ResponseBodyLogLimit = 4096;
 });
 
-builder.Logging
-       .ClearProviders().AddConsole().AddDebug();
+/*builder.Logging
+       .ClearProviders().AddConsole().AddDebug() ;*/
+
+builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
+{
+    loggerConfiguration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services);
+});
 
 
 builder.Services.AddControllersWithViews();
