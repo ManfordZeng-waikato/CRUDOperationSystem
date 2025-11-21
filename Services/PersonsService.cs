@@ -99,7 +99,7 @@ namespace Services
                             await _personsRepository.GetFilteredPersons(temp =>
                                 temp.Gender != null && temp.Gender.Contains(searchString)),
 
-                        nameof(PersonResponse.CountryID) =>
+                        nameof(PersonResponse.Country) =>
                             await _personsRepository.GetFilteredPersons(temp =>
                                 temp.Country != null &&
                                 temp.Country.CountryName.Contains(searchString)),

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CRUDOperationSystem.Filters.ActionFilters;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Rotativa.AspNetCore;
 using ServiceContracts;
@@ -24,6 +25,7 @@ namespace CRUDOperationSystem.Controllers
 
         [Route("[action]")]
         [Route("/")]
+        [TypeFilter(typeof(PersonsListActionFilter))]
         public async Task<IActionResult> Index(string searchBy, string? searchString, string sortBy = nameof(PersonResponse.PersonName), SortOrderOptions sortOrderOptions = SortOrderOptions.ASC)
         {
             _logger.LogInformation("Index action method of PersonsController");
@@ -36,7 +38,7 @@ namespace CRUDOperationSystem.Controllers
                 { nameof(PersonResponse.Email) ,"Email" },
                 { nameof(PersonResponse.DateOfBirth) ,"Date of Birth" },
                 { nameof(PersonResponse.Gender) ,"Gender" },
-                { nameof(PersonResponse.CountryID) ,"Country ID" },
+                { nameof(PersonResponse.Country) ,"Country " },
                 { nameof(PersonResponse.Address) ,"Address" },
             };
 
