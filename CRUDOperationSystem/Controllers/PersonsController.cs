@@ -26,6 +26,7 @@ namespace CRUDOperationSystem.Controllers
         [Route("[action]")]
         [Route("/")]
         [TypeFilter(typeof(PersonsListActionFilter))]
+        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "X-Custom-Key", "Custom-Value" })]
         public async Task<IActionResult> Index(string searchBy, string? searchString, string sortBy = nameof(PersonResponse.PersonName), SortOrderOptions sortOrderOptions = SortOrderOptions.ASC)
         {
             _logger.LogInformation("Index action method of PersonsController");
@@ -43,6 +44,7 @@ namespace CRUDOperationSystem.Controllers
 
         [Route("[action]")]
         [HttpGet]
+        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "my-Key", "my-Value" })]
         public async Task<IActionResult> Create()
         {
             List<CountryResponse> countryResponses = await
