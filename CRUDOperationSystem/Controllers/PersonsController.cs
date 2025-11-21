@@ -32,24 +32,11 @@ namespace CRUDOperationSystem.Controllers
             _logger.LogDebug($"SearchBy: {searchBy}, searchString:{searchString},sortBy:{sortBy},sortOrderOptions:{sortOrderOptions}");
 
             //Search
-            ViewBag.SearchFileds = new Dictionary<string, string>()
-            {
-                { nameof(PersonResponse.PersonName) ,"Person Name" },
-                { nameof(PersonResponse.Email) ,"Email" },
-                { nameof(PersonResponse.DateOfBirth) ,"Date of Birth" },
-                { nameof(PersonResponse.Gender) ,"Gender" },
-                { nameof(PersonResponse.Country) ,"Country " },
-                { nameof(PersonResponse.Address) ,"Address" },
-            };
 
             List<PersonResponse> persons = await _personsService.GetFilteredPersons(searchBy, searchString);
-            ViewBag.CurrentSearchBy = searchBy;
-            ViewBag.CurrentSearchString = searchString;
 
             //Sort
             List<PersonResponse> sortedPerson = await _personsService.GetSortedPersons(persons, sortBy, sortOrderOptions);
-            ViewBag.CurrentSortBy = sortBy;
-            ViewBag.CurrentSortOrder = sortOrderOptions.ToString();
 
             return View(sortedPerson);
         }

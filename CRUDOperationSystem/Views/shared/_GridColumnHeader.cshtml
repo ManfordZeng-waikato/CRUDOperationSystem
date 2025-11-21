@@ -1,20 +1,38 @@
 ﻿@if (ViewBag.CurrentSortBy == ViewBag.ColumnName && ViewBag.CurrentSortOrder == SortOrderOptions.ASC.ToString())
 {
     <th>
-        <a href="~/persons/index?searchBy=@(ViewBag.CurrentSearchBy)&searchString=@(ViewBag.CurrentSearchString)&sortBy=@(ViewBag.ColumnName)&sortOrderOptions=@(nameof(SortOrderOptions.DESC))">@(ViewBag.DisplayName)</a>
+        <a asp-controller="Persons" asp-action="Index"
+           asp-route-searchBy="@ViewBag.CurrentSearchBy"
+           asp-route-searchString="@ViewBag.CurrentSearchString"
+           asp-route-sortBy="@ViewBag.ColumnName"
+           asp-route-sortOrderOptions="DESC">
+           @ViewBag.DisplayName
+        </a>
         <i class="fa-solid fa-sort-up"></i>
     </th>
 }
 else if (ViewBag.CurrentSortBy == ViewBag.ColumnName && ViewBag.CurrentSortOrder == SortOrderOptions.DESC.ToString())
 {
     <th>
-        <a href="~/persons/index?searchBy=@(ViewBag.CurrentSearchBy)&searchString=@(ViewBag.CurrentSearchString)&sortBy=@(ViewBag.ColumnName)&sortOrderOptions=@(nameof(SortOrderOptions.ASC))">@(ViewBag.DisplayName)</a>
+        <a asp-controller="Persons" asp-action="Index"
+           asp-route-searchBy="@ViewBag.CurrentSearchBy"
+           asp-route-searchString="@ViewBag.CurrentSearchString"
+           asp-route-sortBy="@ViewBag.ColumnName"
+           asp-route-sortOrderOptions="ASC">
+           @ViewBag.DisplayName
+        </a>
         <i class="fa-solid fa-sort-down"></i>
     </th>
 }
 else
 {
     <th>
-        <a href="~/persons/index?searchBy=@(ViewBag.CurrentSearchBy)&searchString=@(ViewBag.CurrentSearchString)&sortBy=@(ViewBag.ColumnName)&sortOrderOptions=@(nameof(SortOrderOptions.ASC))">@(ViewBag.DisplayName)</a>
+        <a asp-controller="Persons" asp-action="Index"
+           asp-route-searchBy="@ViewBag.CurrentSearchBy"
+           asp-route-searchString="@ViewBag.CurrentSearchString"
+           asp-route-sortBy="@ViewBag.ColumnName"
+           asp-route-sortOrderOptions="ASC">
+           @ViewBag.DisplayName
+        </a>
     </th>
 }

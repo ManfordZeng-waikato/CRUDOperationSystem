@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using CRUDOperationSystem.Controllers;
+using Microsoft.AspNetCore.Mvc.Filters;
 using ServiceContracts.DTO;
 
 namespace CRUDOperationSystem.Filters.ActionFilters
@@ -13,10 +14,41 @@ namespace CRUDOperationSystem.Filters.ActionFilters
         public void OnActionExecuted(ActionExecutedContext context)
         {
             _logger.LogInformation("PersonsListActionFilter.OnActionExecuted method");
+            PersonsController personsController = (PersonsController)context.Controller;
+
+            IDictionary<string, object?>? parameters = (IDictionary<string, object?>?)context.HttpContext.Items["arguments"];
+            if (parameters != null && parameters.ContainsKey("searchBy"))
+            {
+                personsController.ViewData["CurrentSearchBy"] = Convert.ToString(parameters["searchBy"]);
+            }
+            if (parameters != null && parameters.ContainsKey("searchString"))
+            {
+                personsController.ViewData["CurrentSearchString"] = Convert.ToString(parameters["searchString"]);
+            }
+            if (parameters != null && parameters.ContainsKey("sortBy"))
+            {
+                personsController.ViewData["CurrentSortBy"] = Convert.ToString(parameters["sortBy"]);
+            }
+            if (parameters != null && parameters.ContainsKey("sortOrderOptions"))
+            {
+                personsController.ViewData["CurrentSortOrder"] = Convert.ToString(parameters["sortOrderOptions"]);
+            }
+
+            personsController.ViewBag.SearchFileds = new Dictionary<string, string>()
+            {
+                { nameof(PersonResponse.PersonName) ,"Person Name" },
+                { nameof(PersonResponse.Email) ,"Email" },
+                { nameof(PersonResponse.DateOfBirth) ,"Date of Birth" },
+                { nameof(PersonResponse.Gender) ,"Gender" },
+                { nameof(PersonResponse.Country) ,"Country " },
+                { nameof(PersonResponse.Address) ,"Address" },
+            };
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
+            context.HttpContext.Items["arguments"] = context.ActionArguments;
+
             _logger.LogInformation("PersonsListActionFilter.OnActionExecuting method");
             if (context.ActionArguments.ContainsKey("searchBy"))
             {
