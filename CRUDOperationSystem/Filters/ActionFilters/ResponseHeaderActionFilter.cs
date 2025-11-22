@@ -2,7 +2,7 @@
 
 namespace CRUDOperationSystem.Filters.ActionFilters
 {
-    public class ResponseHeaderActionFilter : IActionFilter, IOrderedFilter
+    public class ResponseHeaderActionFilter : IAsyncActionFilter, IOrderedFilter
     {
         private readonly ILogger<ResponseHeaderActionFilter> _logger;
         private readonly string _key;
@@ -15,17 +15,15 @@ namespace CRUDOperationSystem.Filters.ActionFilters
             _value = value;
             Order = order;
         }
-
-        public void OnActionExecuted(ActionExecutedContext context)
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            _logger.LogInformation("{FilterName}.{MethodName} method", nameof(ResponseHeaderActionFilter), nameof(OnActionExecuted));
+            _logger.LogInformation("{FilterName}.{MethodName} method-before", nameof(ResponseHeaderActionFilter), nameof(OnActionExecutionAsync));
+
+            await next();
+
+            _logger.LogInformation("{FilterName}.{MethodName} method-after", nameof(ResponseHeaderActionFilter), nameof(OnActionExecutionAsync));
 
             context.HttpContext.Response.Headers[_key] = _value;
-        }
-
-        public void OnActionExecuting(ActionExecutingContext context)
-        {
-            _logger.LogInformation("{FilterName}.{MethodName} method", nameof(ResponseHeaderActionFilter), nameof(OnActionExecuting));
         }
     }
 }
