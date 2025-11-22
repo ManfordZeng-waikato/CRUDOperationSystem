@@ -1,3 +1,4 @@
+using CRUDOperationSystem.Filters.ActionFilters;
 using Entities;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
@@ -29,7 +30,14 @@ builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, 
 });
 
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    //options.Filters.Add<ResponseHeaderActionFilter>();
+
+    var logger =
+    builder.Services.BuildServiceProvider().GetRequiredService<ILogger<ResponseHeaderActionFilter>>();
+    options.Filters.Add(new ResponseHeaderActionFilter(logger, "My-Key-From-Global", "My-Value-From-Global"));
+});
 
 //add services into IOC container 
 builder.Services.AddScoped<ICountriesService, CountriesService>();
