@@ -36,7 +36,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Filters\AuthorizationFilters\" />
 	  <Folder Include="logs\" />
 	</ItemGroup>	
 

@@ -1,4 +1,6 @@
 ﻿using CRUDOperationSystem.Filters.ActionFilters;
+using CRUDOperationSystem.Filters.AuthorizationFilters;
+using CRUDOperationSystem.Filters.ResultFilters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Rotativa.AspNetCore;
@@ -75,6 +77,7 @@ namespace CRUDOperationSystem.Controllers
 
         [HttpGet]
         [Route("[action]/{personID}")]
+        [TypeFilter(typeof(TokenResultFilter))]
         public async Task<IActionResult> Edit(Guid personID)
         {
             PersonResponse? personResponse =
@@ -99,7 +102,7 @@ namespace CRUDOperationSystem.Controllers
         [HttpPost]
         [Route("[action]/{personID}")]
         [TypeFilter(typeof(PersonCreateAndEditPostActionFilter))]
-
+        [TypeFilter(typeof(TokenAuthorizationFilter))]
         public async Task<IActionResult> Edit(PersonUpdateRequest personRequest)
         {
             PersonResponse? personResponse =
