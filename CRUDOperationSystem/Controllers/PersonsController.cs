@@ -45,20 +45,17 @@ namespace CRUDOperationSystem.Controllers
 
         [Route("[action]")]
         [HttpGet]
-        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "my-Key", "my-Value" })]
+        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "my-Key", "my-Value", 4 })]
         public async Task<IActionResult> Create()
         {
             List<CountryResponse> countryResponses = await
             _countriesService.GetAllCountries();
-
-
-
             ViewBag.Countries = countryResponses.Select(temp => new SelectListItem()
             {
                 Text = temp.CountryName,
                 Value = temp.CountryID.ToString()
             }
-            );
+            ).ToList();
             //new SelectListItem() { Text="USA",Value="1122233"};
             //<option value="1122233"></option>
             return View();
@@ -66,21 +63,11 @@ namespace CRUDOperationSystem.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> Create(PersonAddRequest personAddRequest)
+        [TypeFilter(typeof(PersonCreateAndEditPostActionFilter))]
+        public async Task<IActionResult> Create(PersonAddRequest personRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                List<CountryResponse> countryResponses =
-               await _countriesService.GetAllCountries();
-                ViewBag.Countries = countryResponses;
-
-                ViewBag.Errors = ModelState.Values.SelectMany(v =>
-                v.Errors).Select(e => e.ErrorMessage).ToList();
-                return View(personAddRequest);
-            }
-
             PersonResponse personResponse =
-           await _personsService.AddPerson(personAddRequest);
+           await _personsService.AddPerson(personRequest);
 
             //Made another get request to "persons/index", navigae to Index() action method
             return RedirectToAction("Index", "Persons");
@@ -111,30 +98,19 @@ namespace CRUDOperationSystem.Controllers
 
         [HttpPost]
         [Route("[action]/{personID}")]
-        public async Task<IActionResult> Edit(PersonUpdateRequest personUpdateRequest)
+        [TypeFilter(typeof(PersonCreateAndEditPostActionFilter))]
+
+        public async Task<IActionResult> Edit(PersonUpdateRequest personRequest)
         {
             PersonResponse? personResponse =
-           await _personsService.GetPersonByPersonID(personUpdateRequest.PersonID);
+           await _personsService.GetPersonByPersonID(personRequest.PersonID);
 
             if (personResponse == null)
                 return RedirectToAction("Index");
 
-            if (ModelState.IsValid)
-            {
-                PersonResponse updatePerson =
-              await _personsService.UpdatePerson(personUpdateRequest);
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                List<CountryResponse> countryResponses =
-               await _countriesService.GetAllCountries();
-                ViewBag.Countries = countryResponses;
-
-                ViewBag.Errors = ModelState.Values.SelectMany(v =>
-                v.Errors).Select(e => e.ErrorMessage).ToList();
-                return View(personResponse.ToPersonUpdateRequest());
-            }
+            PersonResponse updatePerson =
+          await _personsService.UpdatePerson(personRequest);
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
