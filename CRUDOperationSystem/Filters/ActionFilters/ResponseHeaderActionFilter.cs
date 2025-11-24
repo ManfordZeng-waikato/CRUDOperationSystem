@@ -21,6 +21,11 @@ namespace CRUDOperationSystem.Filters.ActionFilters
 
             await next();
 
+            if (context.Filters.OfType<SkipFilter>().Any())
+            {
+                return;
+            }
+
             _logger.LogInformation("{FilterName}.{MethodName} method-after", nameof(ResponseHeaderActionFilter), nameof(OnActionExecutionAsync));
 
             context.HttpContext.Response.Headers[_key] = _value;

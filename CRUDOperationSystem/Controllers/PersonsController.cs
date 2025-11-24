@@ -1,4 +1,5 @@
-﻿using CRUDOperationSystem.Filters.ActionFilters;
+﻿using CRUDOperationSystem.Filters;
+using CRUDOperationSystem.Filters.ActionFilters;
 using CRUDOperationSystem.Filters.AuthorizationFilters;
 using CRUDOperationSystem.Filters.ExceptionFilters;
 using CRUDOperationSystem.Filters.ResultFilters;
@@ -51,6 +52,7 @@ namespace CRUDOperationSystem.Controllers
         [Route("[action]")]
         [HttpGet]
         [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "my-Key", "my-Value", 4 })]
+        [TypeFilter(typeof(SkipFilter))]
         public async Task<IActionResult> Create()
         {
             List<CountryResponse> countryResponses = await
