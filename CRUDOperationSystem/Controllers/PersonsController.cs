@@ -1,5 +1,6 @@
 ﻿using CRUDOperationSystem.Filters.ActionFilters;
 using CRUDOperationSystem.Filters.AuthorizationFilters;
+using CRUDOperationSystem.Filters.ExceptionFilters;
 using CRUDOperationSystem.Filters.ResultFilters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +13,8 @@ namespace CRUDOperationSystem.Controllers
 {
     [Route("[controller]")]
     [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "My-Key-From-Controller", "My-Value-From-Controller", 3 }, Order = 3)]
+    [TypeFilter(typeof(HandleExceptionFilter))]
+
     public class PersonsController : Controller
     {
 
