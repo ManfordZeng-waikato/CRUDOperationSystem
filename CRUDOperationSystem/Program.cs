@@ -22,14 +22,6 @@ builder.Services.AddHttpLogging(options =>
 /*builder.Logging
        .ClearProviders().AddConsole().AddDebug() ;*/
 
-builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
-{
-    loggerConfiguration
-    .ReadFrom.Configuration(context.Configuration)
-    .ReadFrom.Services(services);
-});
-
-
 builder.Services.AddControllersWithViews(options =>
 {
     //options.Filters.Add<ResponseHeaderActionFilter>(5);
@@ -49,11 +41,16 @@ if (builder.Environment.IsEnvironment("Test") == false)
   });
 }
 
-
 builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
 builder.Services.AddScoped<IPersonsRepository, PersonsRepository>();
 builder.Services.AddScoped<ResponseHeaderActionFilter>();
 
+builder.Host.UseSerilog((HostBuilderContext context, IServiceProvider services, LoggerConfiguration loggerConfiguration) =>
+{
+    loggerConfiguration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services);
+});
 
 /*Data Source = (localdb)\MSSQLLocalDB;
 Initial Catalog = PersonsDatabase;

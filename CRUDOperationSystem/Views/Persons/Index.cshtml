@@ -3,90 +3,108 @@
     ViewBag.Title = "Persons";
 }
 
-<form asp-controller="Persons" asp-action="Index"  method="get">
-    <h1>Persons</h1>
-
-    <a asp-controller="Persons" asp-action="Create" class="ml">Create Person</a>
-    <a asp-controller="Persons" asp-action="PersonsPDF"class="ml">Download as PDF</a>
-    <a asp-controller="Persons" asp-action="PersonsCSV"class="ml">Download as CSV</a>
-    <a asp-controller="Persons" asp-action="PersonsExcel" class="ml">Download as Excel</a>
-
-    <div class="box flex">
+<form asp-controller="Persons" asp-action="Index" method="get">
+    <div class="flex">
         <div class="flex-1">
-            <select class="form-input" name="searchBy">
-                @foreach (var filed in ViewBag.SearchFileds)
-                {
-                    if (filed.Key == @ViewBag.CurrentSearchBy)
-                    {
-                        <option value="@filed.Key" selected="selected">@filed.Value</option>
-                    }
-                    else
-                    {
-                        <option value="@filed.Key">@filed.Value</option>
-                    }
-                }
-            </select>
+            <div class="text-grey">
+                <span>Contacts</span>
+                <i class="fa-solid fa-caret-right"></i>
+                <span class="text-grey">Persons</span>
+            </div>
         </div>
-        <div class="flex-1">
-            <input type="search" id="Search" class="form-input" placeholder="Search" name="searchString" value="@ViewBag.CurrentSearchString" />
-        </div>
-        <div class="flex-1">
-            <button class="button-blue-back button">Search</button>
-            <a asp-controller="Persons" asp-action="Index" class="link-hover">Clear all</a>
+
+        <div class="flex-1 text-right">
+            <a asp-controller="Persons" asp-action="Create" class="button-link button-blue-back ml">Create Person</a>
+            <a asp-controller="Persons" asp-action="PersonsPDF" class="button-link button-blue-back ml">Download as PDF</a>
+            <a asp-controller="Persons" asp-action="PersonsCSV" class="button-link button-blue-back ml">Download as CSV</a>
+            <a asp-controller="Persons" asp-action="PersonsExcel" class="button-link button-blue-back ml">Download as Excel</a>
         </div>
     </div>
-    <table class="table w-100 mt persons">
-        <thead>
-            <tr>
-                @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
-                {
-                 {"ColumnName", nameof(PersonResponse.PersonName)},
-                 {"DisplayName", "Person Name"}
-                })
 
-                 @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
-                {
-                 {"ColumnName", nameof(PersonResponse.Email)},
-                 {"DisplayName", "Email"}
-                })
+    <div class="table-container">
+        <div class="flex">
+            <div class="flex-1">
+                <h1>Persons</h1>
+            </div>
+            <div class="flex-3 text-right">
+                <label>Search by:</label>
+                <select class="search-dropdown" name="searchBy" style="width:200px">
+                    @foreach (var filed in ViewBag.SearchFileds)
+                    {
+                        if (filed.Key == @ViewBag.CurrentSearchBy)
+                        {
+                            <option value="@filed.Key" selected="selected">@filed.Value</option>
+                        }
+                        else
+                        {
+                            <option value="@filed.Key">@filed.Value</option>
+                        }
+                    }
+                </select>
 
-                 @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
-                {
-                 {"ColumnName", nameof(PersonResponse.DateOfBirth)},
-                 {"DisplayName", "Date of Birth"}
-                })
+                <input type="search" id="Search" class="search-text" placeholder="Search" name="searchString" value="@ViewBag.CurrentSearchString" style="width:200px" />
 
-                 @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
-                {
-                 {"ColumnName", nameof(PersonResponse.Age)},
-                 {"DisplayName", "Age"}
-                })
+                <button class="button-blue-back button">Search</button>
+                <a asp-controller="Persons" asp-action="Index" class="ml-link-hover">Clear all</a>
+            </div>
+        </div>
 
-                 @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
-                { 
-                 {"ColumnName", nameof(PersonResponse.Gender)},
-                 {"DisplayName", "Gender"}
-                })
 
-                 @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
-                {
-                 {"ColumnName", nameof(PersonResponse.Country)},
-                 {"DisplayName", "Country"}
-                })
 
-                 @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
-                {
-                 {"ColumnName", nameof(PersonResponse.Address)},
-                 {"DisplayName", "Address"}
-                })
 
-                 @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
-                {
-                 {"ColumnName", nameof(PersonResponse.ReceiveNewsLetters)},
-                 {"DisplayName", "Receive News Letters"}
-                })
 
-                <th>Options</th>
+        <table class="table w-100 mt persons">
+            <thead>
+                <tr>
+                    @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+                    {
+                        { "ColumnName", nameof(PersonResponse.PersonName)},
+                                        { "DisplayName", "Person Name"}
+                    })
+
+                    @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+                                        {
+                        { "ColumnName", nameof(PersonResponse.Email)},
+                                        { "DisplayName", "Email"}
+                    })
+
+                    @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+                                        {
+                        { "ColumnName", nameof(PersonResponse.DateOfBirth)},
+                                        { "DisplayName", "Date of Birth"}
+                    })
+
+                    @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+                                        {
+                        { "ColumnName", nameof(PersonResponse.Age)},
+                                        { "DisplayName", "Age"}
+                    })
+
+                    @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+                                        {
+                        { "ColumnName", nameof(PersonResponse.Gender)},
+                                        { "DisplayName", "Gender"}
+                    })
+
+                    @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+                                        {
+                        { "ColumnName", nameof(PersonResponse.Country)},
+                                        { "DisplayName", "Country"}
+                    })
+
+                    @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+                                        {
+                        { "ColumnName", nameof(PersonResponse.Address)},
+                                        { "DisplayName", "Address"}
+                    })
+
+                    @await Html.PartialAsync("_GridColumnHeader", new ViewDataDictionary(ViewData)
+                                        {
+                        { "ColumnName", nameof(PersonResponse.ReceiveNewsLetters)},
+                                        { "DisplayName", "Receive News Letters"}
+                    })
+
+                    <th>Options</th>
                 </tr>
             </thead>
             <tbody>
@@ -112,8 +130,7 @@
                         </td>
                     </tr>
                 }
-            <tr></tr>
-        </tbody>
-
-    </table>
+            </tbody>
+        </table>
+    </div>
 </form>
