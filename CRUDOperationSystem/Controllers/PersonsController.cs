@@ -13,7 +13,8 @@ using ServiceContracts.Enums;
 namespace CRUDOperationSystem.Controllers
 {
     [Route("[controller]")]
-    [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "My-Key-From-Controller", "My-Value-From-Controller", 3 }, Order = 3)]
+    /*  [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "My-Key-From-Controller", "My-Value-From-Controller", 3 }, Order = 3)]*/
+    [ResponseHeaderActionFilter("My-Key-From-Controller", "My-Value-From-Controller", 3)]
     [TypeFilter(typeof(HandleExceptionFilter))]
 
     public class PersonsController : Controller
@@ -33,7 +34,8 @@ namespace CRUDOperationSystem.Controllers
         [Route("[action]")]
         [Route("/")]
         [TypeFilter(typeof(PersonsListActionFilter), Order = 4)]
-        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "My-Key-From-Action", "My-Value-From-Action", 1 }, Order = 1)]
+        /*[TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "My-Key-From-Action", "My-Value-From-Action", 1 }, Order = 1)]*/
+        [ResponseHeaderActionFilter("My-Key-From-Action", "My-Value-From-Action", 1)]
         public async Task<IActionResult> Index(string searchBy, string? searchString, string sortBy = nameof(PersonResponse.PersonName), SortOrderOptions sortOrderOptions = SortOrderOptions.ASC)
         {
             _logger.LogInformation("Index action method of PersonsController");
@@ -51,7 +53,8 @@ namespace CRUDOperationSystem.Controllers
 
         [Route("[action]")]
         [HttpGet]
-        [TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "my-Key", "my-Value", 4 })]
+        /*[TypeFilter(typeof(ResponseHeaderActionFilter), Arguments = new object[] { "my-Key", "my-Value", 4 })]*/
+        [ResponseHeaderActionFilter("my-Key", "my-Value", 4)]
         [TypeFilter(typeof(SkipFilter))]
         public async Task<IActionResult> Create()
         {
