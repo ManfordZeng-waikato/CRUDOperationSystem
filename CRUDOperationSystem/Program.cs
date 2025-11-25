@@ -34,7 +34,7 @@ builder.Services.AddControllersWithViews(options =>
 {
     //options.Filters.Add<ResponseHeaderActionFilter>(5);
 
-    options.Filters.Add(new ResponseHeaderActionFilter("My-Key-From-Global", "My-Value-From-Global", 2));
+    options.Filters.Add(new ResponseHeaderFilterFactoryAttribute("My-Key-From-Global", "My-Value-From-Global", 2));
 });
 
 //add services into IOC container 
@@ -52,7 +52,7 @@ if (builder.Environment.IsEnvironment("Test") == false)
 
 builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
 builder.Services.AddScoped<IPersonsRepository, PersonsRepository>();
-
+builder.Services.AddScoped<ResponseHeaderActionFilter>();
 
 
 /*Data Source = (localdb)\MSSQLLocalDB;
