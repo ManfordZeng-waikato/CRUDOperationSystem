@@ -4,6 +4,7 @@
 }
 
 <form asp-controller="Persons" asp-action="Index" method="get">
+    @* breadcrumb starts *@
     <div class="flex">
         <div class="flex-1">
             <div class="text-grey">
@@ -20,6 +21,7 @@
             <a asp-controller="Persons" asp-action="PersonsExcel" class="button-link button-blue-back ml">Download as Excel</a>
         </div>
     </div>
+    @* breadcrumb ends *@
 
     <div class="table-container">
         <div class="flex">
@@ -48,10 +50,6 @@
                 <a asp-controller="Persons" asp-action="Index" class="ml-link-hover">Clear all</a>
             </div>
         </div>
-
-
-
-
 
         <table class="table w-100 mt persons">
             <thead>
@@ -120,11 +118,11 @@
                         <td style="width:10%">@person.Address</td>
                         <td style="width:20%">@person.ReceiveNewsLetters</td>
                         <td style="width:20%">
-                            <a asp-controller="Persons" asp-action="Edit" asp-route-personID="@person.PersonID">
+                            <a asp-controller="Persons" asp-action="Edit" asp-route-personID="@person.PersonID" class="button-link button-blue-back">
                                 Edit
                             </a>
 
-                            <a asp-controller="Persons" asp-action="Delete" asp-route-personID="@person.PersonID">
+                            <a asp-controller="Persons" asp-action="Delete" asp-route-personID="@person.PersonID" class="button-link button-red-back">
                                 Delete
                             </a>
                         </td>

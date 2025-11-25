@@ -1,6 +1,7 @@
 ﻿using CRUDOperationSystem.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using ServiceContracts.DTO;
+using ServiceContracts.Enums;
 
 namespace CRUDOperationSystem.Filters.ActionFilters
 {
@@ -29,9 +30,18 @@ namespace CRUDOperationSystem.Filters.ActionFilters
             {
                 personsController.ViewData["CurrentSortBy"] = Convert.ToString(parameters["sortBy"]);
             }
+            else
+            {
+                personsController.ViewData["CurrentSortBy"] = nameof(PersonResponse.PersonName);
+            }
+
             if (parameters != null && parameters.ContainsKey("sortOrderOptions"))
             {
                 personsController.ViewData["CurrentSortOrder"] = Convert.ToString(parameters["sortOrderOptions"]);
+            }
+            else
+            {
+                personsController.ViewData["CurrentSortOrder"] = nameof(SortOrderOptions.ASC);
             }
 
             personsController.ViewBag.SearchFileds = new Dictionary<string, string>()
