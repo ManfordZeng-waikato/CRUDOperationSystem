@@ -32,8 +32,10 @@ namespace CRUDOperationSystem.Middlewares
                 {
                     _logger.LogError("{ExceptionType}{ExceptionMessage}", ex.GetType().ToString(), ex.Message);
                 }
-                httpContext.Response.StatusCode = 500;
+                /*httpContext.Response.StatusCode = 500;
                 await httpContext.Response.WriteAsync("Error occurred");
+*/
+                throw;
             }
 
         }
