@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Entities;
+using Exceptions;
 using Microsoft.Extensions.Logging;
 using OfficeOpenXml;
 using RepositoryContract;
@@ -236,7 +237,7 @@ namespace Services
             Person? matchimgPerson =
             await _personsRepository.GetPersonByPersonID(personUpdateRequest.PersonID);
             if (matchimgPerson == null)
-                throw new ArgumentException("Given person ID doesn't exist");
+                throw new InvalidPersonIDException("Given person ID doesn't exist");
 
             matchimgPerson.PersonName = personUpdateRequest.PersonName;
             matchimgPerson.Gender = personUpdateRequest.Gender.ToString();
