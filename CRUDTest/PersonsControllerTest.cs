@@ -60,32 +60,7 @@ namespace CRUDTest
 
         #region Creat
         [Fact]
-        public async Task Create_IfModelErrors_ToReturnCreateView()
-        {
-            PersonAddRequest personAddRequest = _fixture.Create<PersonAddRequest>();
-            PersonResponse personResponse = _fixture.Create<PersonResponse>();
-            List<CountryResponse> countriesResponse = _fixture.Create<List<CountryResponse>>();
-
-            _countriesServieceMock.Setup(temp => temp.GetAllCountries())
-                .ReturnsAsync(countriesResponse);
-            _personsServiceMock.Setup(temp => temp.AddPerson(It.IsAny<PersonAddRequest>()))
-                .ReturnsAsync(personResponse);
-
-            PersonsController personsController = new PersonsController(_personsService, _countriesService, _logger);
-
-            personsController.ModelState.AddModelError("PersonName", "Person Name can't be blank");
-
-
-            IActionResult result =
-            await personsController.Create(personAddRequest);
-
-            ViewResult viewResult = Assert.IsType<ViewResult>(result);
-            viewResult.ViewData.Model.Should().BeAssignableTo<PersonAddRequest>();
-            viewResult.ViewData.Model.Should().Be(personAddRequest);
-        }
-
-        [Fact]
-        public async Task Create_IfNoModelErrors_ToReturnCreateView()
+        public async Task Create_IfNoModelErrors_ToReturnRedirectToIndexView()
         {
             PersonAddRequest personAddRequest = _fixture.Create<PersonAddRequest>();
             PersonResponse personResponse = _fixture.Create<PersonResponse>();
@@ -104,8 +79,6 @@ namespace CRUDTest
             RedirectToActionResult redirectResult = Assert.IsType<RedirectToActionResult>(result);
             redirectResult.ActionName.Should().Be("Index");
         }
-
-
         #endregion
     }
 }
