@@ -26,17 +26,23 @@ namespace CRUDOperationSystem.Controllers
         private readonly IPersonsDeleterService _personsDeleterService;
         private readonly IPersonsUpdaterService _personsUpdaterService;
 
-        private readonly ICountriesService _countriesService;
+        private readonly ICountriesUploaderService _countriesUploaderService;
+        private readonly ICountriesGetterService _countriesGetterService;
+        private readonly ICountriesAdderService _countriesAdderService;
         private readonly ILogger<PersonsController> _logger;
 
-        public PersonsController(IPersonsGetterService personsGetterService, IPersonsAdderService personsAdderService, IPersonsDeleterService personsDeleterService, IPersonsSorterService personsSorterService, IPersonsUpdaterService personsUpdaterService, ICountriesService countriesService, ILogger<PersonsController> logger)
+        public PersonsController(IPersonsGetterService personsGetterService, IPersonsAdderService personsAdderService, IPersonsDeleterService personsDeleterService, IPersonsSorterService personsSorterService, IPersonsUpdaterService personsUpdaterService, ICountriesAdderService countriesAdderService, ICountriesGetterService countriesGetterService, ICountriesUploaderService countriesUploaderService, ILogger<PersonsController> logger)
         {
             _personsGetterService = personsGetterService;
             _personsAdderService = personsAdderService;
             _personsSorterService = personsSorterService;
-            _personsAdderService = personsAdderService;
             _personsDeleterService = personsDeleterService;
-            _countriesService = countriesService;
+            _personsUpdaterService = personsUpdaterService;
+
+            _countriesAdderService = countriesAdderService;
+            _countriesGetterService = countriesGetterService;
+            _countriesUploaderService = countriesUploaderService;
+
             _logger = logger;
         }
 
@@ -68,7 +74,7 @@ namespace CRUDOperationSystem.Controllers
         public async Task<IActionResult> Create()
         {
             List<CountryResponse> countryResponses = await
-            _countriesService.GetAllCountries();
+            _countriesGetterService.GetAllCountries();
             ViewBag.Countries = countryResponses.Select(temp => new SelectListItem()
             {
                 Text = temp.CountryName,
@@ -105,7 +111,7 @@ namespace CRUDOperationSystem.Controllers
             PersonUpdateRequest personUpdateRequest = personResponse.ToPersonUpdateRequest();
 
             List<CountryResponse> countryResponses =
-          await _countriesService.GetAllCountries();
+          await _countriesGetterService.GetAllCountries();
             ViewBag.Countries = countryResponses.Select(temp => new SelectListItem()
             {
                 Text = temp.CountryName,

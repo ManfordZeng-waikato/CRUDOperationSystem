@@ -8,10 +8,14 @@ namespace CRUDOperationSystem.Filters.ActionFilters
 {
     public class PersonCreateAndEditPostActionFilter : IAsyncActionFilter
     {
-        private readonly ICountriesService _countriesService;
-        public PersonCreateAndEditPostActionFilter(ICountriesService countriesService)
+        private readonly ICountriesUploaderService _countriesUploaderService;
+        private readonly ICountriesGetterService _countriesGetterService;
+        private readonly ICountriesAdderService _countriesAdderService;
+        public PersonCreateAndEditPostActionFilter(ICountriesAdderService countriesAdderService, ICountriesGetterService countriesGetterService, ICountriesUploaderService countriesService)
         {
-            _countriesService = countriesService;
+            _countriesUploaderService = countriesService;
+            _countriesAdderService = countriesAdderService;
+            _countriesGetterService = countriesGetterService;
         }
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
@@ -20,7 +24,7 @@ namespace CRUDOperationSystem.Filters.ActionFilters
                 if (!personsController.ModelState.IsValid)
                 {
                     List<CountryResponse> countryResponses =
-                   await _countriesService.GetAllCountries();
+                   await _countriesGetterService.GetAllCountries();
 
                     personsController.ViewBag.Countries = countryResponses
                         .Select(c => new SelectListItem

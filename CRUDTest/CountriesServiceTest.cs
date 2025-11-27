@@ -11,7 +11,7 @@ namespace CRUDTest
 {
     public class CountriesServiceTest
     {
-        private readonly ICountriesService _countriesService;
+        private readonly ICountriesUploaderService _countriesService;
         private readonly IFixture _fixture;
         private readonly Mock<ICountriesRepository> _countriesRepositoryMock;
         private readonly ICountriesRepository _countriesRepository;

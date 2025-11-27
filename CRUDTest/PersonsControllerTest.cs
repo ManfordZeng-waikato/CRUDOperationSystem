@@ -18,10 +18,10 @@ namespace CRUDTest
         private readonly IPersonsDeleterService _personsDeleterService;
         private readonly IPersonsSorterService _personsSorterService;
 
-        private readonly ICountriesService _countriesService;
+        private readonly ICountriesUploaderService _countriesService;
         private readonly ILogger<PersonsController> _logger;
 
-        private readonly Mock<ICountriesService> _countriesServieceMock;
+        private readonly Mock<ICountriesUploaderService> _countriesServieceMock;
 
         private readonly Mock<IPersonsGetterService> _personsGetterServiceMock;
         private readonly Mock<IPersonsUpdaterService> _personsUpdaterServiceMock;
@@ -34,7 +34,7 @@ namespace CRUDTest
 
         public PersonsControllerTest()
         {
-            _countriesServieceMock = new Mock<ICountriesService>();
+            _countriesServieceMock = new Mock<ICountriesUploaderService>();
             _personsAdderServiceMock = new Mock<IPersonsAdderService>();
             _personsUpdaterServiceMock = new Mock<IPersonsUpdaterService>();
             _personsDeleterServiceMock = new Mock<IPersonsDeleterService>();

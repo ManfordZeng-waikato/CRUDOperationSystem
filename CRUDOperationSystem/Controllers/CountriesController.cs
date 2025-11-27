@@ -6,11 +6,16 @@ namespace CRUDOperationSystem.Controllers
     [Route("[controller]")]
     public class CountriesController : Controller
     {
-        private readonly ICountriesService _countriesService;
+        private readonly ICountriesUploaderService _countriesUploaderService;
+        private readonly ICountriesGetterService _countriesGetterService;
+        private readonly ICountriesAdderService _countriesAdderService;
 
-        public CountriesController(ICountriesService countriesService)
+
+        public CountriesController(ICountriesAdderService countriesAdderService, ICountriesGetterService countriesGetterService, ICountriesUploaderService countriesUploaderService)
         {
-            _countriesService = countriesService;
+            _countriesUploaderService = countriesUploaderService;
+            _countriesAdderService = countriesAdderService;
+            _countriesGetterService = countriesGetterService;
         }
 
 
@@ -37,7 +42,7 @@ namespace CRUDOperationSystem.Controllers
             }
 
             int countriesCountInserted =
-            await _countriesService.UploadCountriesFromExcelFile(excelFile);
+            await _countriesUploaderService.UploadCountriesFromExcelFile(excelFile);
 
             ViewBag.Message = $"{countriesCountInserted} Countries Uploaded";
             return View();

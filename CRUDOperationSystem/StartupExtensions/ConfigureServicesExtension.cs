@@ -30,7 +30,10 @@ namespace CRUDOperationSystem.StartupExtensions
             });
 
             //add services into IOC container 
-            services.AddScoped<ICountriesService, CountriesService>();
+            services.AddScoped<ICountriesUploaderService, CountriesUploaderService>();
+            services.AddScoped<ICountriesAdderService, CountriesAdderService>();
+            services.AddScoped<ICountriesGetterService, CountriesGetterService>();
+
             services.AddScoped<IPersonsGetterService, PersonsGetterService>();
             services.AddScoped<IPersonsAdderService, PersonsAdderService>();
             services.AddScoped<IPersonsUpdaterService, PersonsUpdaterService>();
