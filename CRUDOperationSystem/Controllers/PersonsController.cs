@@ -20,13 +20,22 @@ namespace CRUDOperationSystem.Controllers
     public class PersonsController : Controller
     {
 
-        private readonly IPersonsService _personsService;
+        private readonly IPersonsGetterService _personsGetterService;
+        private readonly IPersonsAdderService _personsAdderService;
+        private readonly IPersonsSorterService _personsSorterService;
+        private readonly IPersonsDeleterService _personsDeleterService;
+        private readonly IPersonsUpdaterService _personsUpdaterService;
+
         private readonly ICountriesService _countriesService;
         private readonly ILogger<PersonsController> _logger;
 
-        public PersonsController(IPersonsService personsService, ICountriesService countriesService, ILogger<PersonsController> logger)
+        public PersonsController(IPersonsGetterService personsGetterService, IPersonsAdderService personsAdderService, IPersonsDeleterService personsDeleterService, IPersonsSorterService personsSorterService, IPersonsUpdaterService personsUpdaterService, ICountriesService countriesService, ILogger<PersonsController> logger)
         {
-            _personsService = personsService;
+            _personsGetterService = personsGetterService;
+            _personsAdderService = personsAdderService;
+            _personsSorterService = personsSorterService;
+            _personsAdderService = personsAdderService;
+            _personsDeleterService = personsDeleterService;
             _countriesService = countriesService;
             _logger = logger;
         }
@@ -43,10 +52,10 @@ namespace CRUDOperationSystem.Controllers
 
             //Search
 
-            List<PersonResponse> persons = await _personsService.GetFilteredPersons(searchBy, searchString);
+            List<PersonResponse> persons = await _personsGetterService.GetFilteredPersons(searchBy, searchString);
 
             //Sort
-            List<PersonResponse> sortedPerson = await _personsService.GetSortedPersons(persons, sortBy, sortOrderOptions);
+            List<PersonResponse> sortedPerson = await _personsSorterService.GetSortedPersons(persons, sortBy, sortOrderOptions);
 
             return View(sortedPerson);
         }
@@ -77,7 +86,7 @@ namespace CRUDOperationSystem.Controllers
         public async Task<IActionResult> Create(PersonAddRequest personRequest)
         {
             PersonResponse personResponse =
-           await _personsService.AddPerson(personRequest);
+           await _personsAdderService.AddPerson(personRequest);
 
             //Made another get request to "persons/index", navigae to Index() action method
             return RedirectToAction("Index", "Persons");
@@ -89,7 +98,7 @@ namespace CRUDOperationSystem.Controllers
         public async Task<IActionResult> Edit(Guid personID)
         {
             PersonResponse? personResponse =
-           await _personsService.GetPersonByPersonID(personID);
+           await _personsGetterService.GetPersonByPersonID(personID);
             if (personResponse == null)
                 return RedirectToAction("Index");
 
@@ -114,13 +123,13 @@ namespace CRUDOperationSystem.Controllers
         public async Task<IActionResult> Edit(PersonUpdateRequest personRequest)
         {
             PersonResponse? personResponse =
-           await _personsService.GetPersonByPersonID(personRequest.PersonID);
+           await _personsGetterService.GetPersonByPersonID(personRequest.PersonID);
 
             if (personResponse == null)
                 return RedirectToAction("Index");
 
             PersonResponse updatePerson =
-          await _personsService.UpdatePerson(personRequest);
+          await _personsUpdaterService.UpdatePerson(personRequest);
             return RedirectToAction("Index");
         }
 
@@ -129,7 +138,7 @@ namespace CRUDOperationSystem.Controllers
         public async Task<IActionResult> Delete(Guid? personID)
         {
             PersonResponse? personResponse =
-           await _personsService.GetPersonByPersonID(personID);
+           await _personsGetterService.GetPersonByPersonID(personID);
             if (personResponse == null)
                 return RedirectToAction("Index");
 
@@ -141,10 +150,10 @@ namespace CRUDOperationSystem.Controllers
         public async Task<IActionResult> Delete(PersonUpdateRequest personUpdateRequest)
         {
             PersonResponse? personResponse =
-           await _personsService.GetPersonByPersonID(personUpdateRequest.PersonID);
+           await _personsGetterService.GetPersonByPersonID(personUpdateRequest.PersonID);
             if (personResponse == null)
                 return RedirectToAction("Index");
-            await _personsService.DeletePerson(personUpdateRequest.PersonID);
+            await _personsDeleterService.DeletePerson(personUpdateRequest.PersonID);
             return RedirectToAction("Index");
         }
 
@@ -152,7 +161,7 @@ namespace CRUDOperationSystem.Controllers
         public async Task<IActionResult> PersonsPDF()
         {
             List<PersonResponse> persons =
-            await _personsService.GetAllPersons();
+            await _personsGetterService.GetAllPersons();
 
             return new ViewAsPdf("PersonsPDF", persons, ViewData)
             {
@@ -171,7 +180,7 @@ namespace CRUDOperationSystem.Controllers
         public async Task<IActionResult> PersonsCSV()
         {
             MemoryStream memoryStream =
-          await _personsService.GetPersonsCSV();
+          await _personsGetterService.GetPersonsCSV();
             return File(memoryStream, "application/octet-stream", "persons.csv");
         }
 
@@ -179,7 +188,7 @@ namespace CRUDOperationSystem.Controllers
         public async Task<IActionResult> PersonsExcel()
         {
             MemoryStream memoryStream =
-          await _personsService.GetPersonsExcel();
+          await _personsGetterService.GetPersonsExcel();
             return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "persons.xlsx");
         }
     }
