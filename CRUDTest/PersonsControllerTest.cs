@@ -12,12 +12,22 @@ namespace CRUDTest
 {
     public class PersonsControllerTest
     {
-        private readonly IPersonsGetterService _personsService;
+        private readonly IPersonsGetterService _personsGetterService;
+        private readonly IPersonsAdderService _personsAdderService;
+        private readonly IPersonsUpdaterService _personsUpdaterService;
+        private readonly IPersonsDeleterService _personsDeleterService;
+        private readonly IPersonsSorterService _personsSorterService;
+
         private readonly ICountriesService _countriesService;
         private readonly ILogger<PersonsController> _logger;
 
         private readonly Mock<ICountriesService> _countriesServieceMock;
-        private readonly Mock<IPersonsGetterService> _personsServiceMock;
+
+        private readonly Mock<IPersonsGetterService> _personsGetterServiceMock;
+        private readonly Mock<IPersonsUpdaterService> _personsUpdaterServiceMock;
+        private readonly Mock<IPersonsDeleterService> _personsDeleterServiceMock;
+        private readonly Mock<IPersonsSorterService> _personsSorterServiceMock;
+        private readonly Mock<IPersonsAdderService> _personsAdderServiceMock;
         private readonly Mock<ILogger<PersonsController>> _loggerMock;
 
         private readonly Fixture _fixture;
@@ -25,9 +35,19 @@ namespace CRUDTest
         public PersonsControllerTest()
         {
             _countriesServieceMock = new Mock<ICountriesService>();
-            _personsServiceMock = new Mock<IPersonsGetterService>();
+            _personsAdderServiceMock = new Mock<IPersonsAdderService>();
+            _personsUpdaterServiceMock = new Mock<IPersonsUpdaterService>();
+            _personsDeleterServiceMock = new Mock<IPersonsDeleterService>();
+            _personsSorterServiceMock = new Mock<IPersonsSorterService>();
+            _personsGetterServiceMock = new Mock<IPersonsGetterService>();
+
             _countriesService = _countriesServieceMock.Object;
-            _personsService = _personsServiceMock.Object;
+            _personsGetterService = _personsGetterServiceMock.Object;
+            _personsAdderService = _personsAdderServiceMock.Object;
+            _personsDeleterService = _personsDeleterServiceMock.Object;
+            _personsUpdaterService = _personsUpdaterServiceMock.Object;
+            _personsSorterService = _personsSorterServiceMock.Object;
+
             _loggerMock = new Mock<ILogger<PersonsController>>();
             _logger = _loggerMock.Object;
             _fixture = new Fixture();
@@ -38,13 +58,13 @@ namespace CRUDTest
         public async Task Index_ShouldReturnIndexViewWithPersonsList()
         {
             List<PersonResponse> personResponses = _fixture.Create<List<PersonResponse>>();
-            PersonsController personsController = new PersonsController(_personsService, _countriesService, _logger);
+            PersonsController personsController = new PersonsController(_personsGetterService, _personsAdderService, _personsDeleterService, _personsSorterService, _personsUpdaterService, _countriesService, _logger);
 
-            _personsServiceMock.Setup(temp =>
+            _personsGetterServiceMock.Setup(temp =>
             temp.GetFilteredPersons(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(personResponses);
 
-            _personsServiceMock.Setup(temp =>
+            _personsSorterServiceMock.Setup(temp =>
             temp.GetSortedPersons(It.IsAny<List<PersonResponse>>(),
             It.IsAny<string>(), It.IsAny<SortOrderOptions>()))
             .ReturnsAsync(personResponses);
@@ -68,10 +88,10 @@ namespace CRUDTest
 
             _countriesServieceMock.Setup(temp => temp.GetAllCountries())
                 .ReturnsAsync(countriesResponse);
-            _personsServiceMock.Setup(temp => temp.AddPerson(It.IsAny<PersonAddRequest>()))
+            _personsAdderServiceMock.Setup(temp => temp.AddPerson(It.IsAny<PersonAddRequest>()))
                 .ReturnsAsync(personResponse);
 
-            PersonsController personsController = new PersonsController(_personsService, _countriesService, _logger);
+            PersonsController personsController = new PersonsController(_personsGetterService, _personsAdderService, _personsDeleterService, _personsSorterService, _personsUpdaterService, _countriesService, _logger);
 
             IActionResult result =
             await personsController.Create(personAddRequest);
